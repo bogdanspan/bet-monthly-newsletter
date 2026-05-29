@@ -1,0 +1,53 @@
+name: BET monthly performance report
+
+on:
+  schedule:
+    - cron: "0 8 1 * *"
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "Optional report month in YYYY-MM format"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Resolve report month
+        id: month
+        shell: bash
+        env:
+          MONTH_INPUT: ${{ inputs.month }}
+        run: |
+          if [ -n "$MONTH_INPUT" ]; then
+            echo "value=$MONTH_INPUT" >> "$GITHUB_OUTPUT"
+          else
+            node -e "const d = new Date(); const y = d.getUTCMonth() === 0 ? d.getUTCFullYear() - 1 : d.getUTCFullYear(); const m = d.getUTCMonth() === 0 ? 12 : d.getUTCMonth(); console.log(`value=${y}-${String(m).padStart(2, '0')}`)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate monthly report
+        run: node scripts/bet-report.js report --month "${{ steps.month.outputs.value }}"
+
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports
+          if git diff --cached --quiet; then
+            echo "No report changes to commit."
+          else
+            git commit -m "Generate BET monthly performance report"
+            git push
+          fi
