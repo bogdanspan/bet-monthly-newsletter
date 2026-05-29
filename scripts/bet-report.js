@@ -6,7 +6,8 @@ const https = require("https");
 
 const BASE_URL = "https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx";
 const DATA_DIR = path.join("data", "bvb_weekly_snapshots");
-const REPORTS_DIR = "reports";
+const DOCS_DIR = "docs";
+const REPORTS_DIR = path.join(DOCS_DIR, "reports");
 const CONFIG_PATH = path.join("config", "bet_symbols.json");
 
 function nowStamp() {
@@ -30,6 +31,67 @@ function readSymbols() {
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
+}
+
+function reportTitleFromFilename(fileName) {
+  const match = fileName.match(/^bet_monthly_performance_(\d{4}-\d{2})_(.+)\.html$/);
+  if (!match) return fileName;
+  return `Raport BET ${match[1]}`;
+}
+
+function buildPublicIndex() {
+  ensureDir(REPORTS_DIR);
+  const reportFiles = fs
+    .readdirSync(REPORTS_DIR)
+    .filter((file) => file.endsWith(".html"))
+    .sort()
+    .reverse();
+
+  const links = reportFiles.length
+    ? reportFiles
+        .map((file) => {
+          const title = reportTitleFromFilename(file);
+          return `<li><a href="reports/${escapeHtml(file)}">${escapeHtml(title)}</a><span>${escapeHtml(file)}</span></li>`;
+        })
+        .join("\n")
+    : `<li><span>Nu există încă rapoarte publicate.</span></li>`;
+
+  const content = `<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BET monthly newsletter</title>
+  <style>
+    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; color: #17202a; background: #f7f9fb; }
+    main { max-width: 860px; margin: 0 auto; padding: 32px 18px 48px; }
+    h1 { margin: 0 0 8px; color: #102a43; font-size: 30px; }
+    p { margin: 0 0 18px; color: #52606d; }
+    ul { list-style: none; padding: 0; margin: 20px 0 0; background: #fff; border: 1px solid #d9e2ec; }
+    li { display: flex; gap: 12px; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #d9e2ec; }
+    li:last-child { border-bottom: 0; }
+    a { color: #0b7285; font-weight: 700; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    span { color: #627d98; font-size: 13px; overflow-wrap: anywhere; }
+    @media (max-width: 640px) {
+      li { display: block; }
+      span { display: block; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>BET monthly newsletter</h1>
+    <p>Rapoarte HTML generate automat pentru companiile din indicele BET.</p>
+    <ul>
+      ${links}
+    </ul>
+  </main>
+</body>
+</html>
+`;
+
+  fs.writeFileSync(path.join(DOCS_DIR, "index.html"), content, "utf8");
 }
 
 function parseNumber(value) {
@@ -338,7 +400,14 @@ function buildReport(month) {
 `;
 
   fs.writeFileSync(reportPath, html, "utf8");
+  buildPublicIndex();
   return reportPath;
+}
+
+function commandPublish() {
+  ensureDir(REPORTS_DIR);
+  buildPublicIndex();
+  console.log(`Published reports to ${DOCS_DIR}`);
 }
 
 async function commandSnapshot(day) {
@@ -380,10 +449,13 @@ async function main() {
     await commandSnapshot(getArg("--day"));
   } else if (command === "report") {
     commandReport(getArg("--month"));
+  } else if (command === "publish") {
+    commandPublish();
   } else {
     console.error("Usage:");
     console.error("  node scripts/bet-report.js snapshot [--day yyyymmdd]");
     console.error("  node scripts/bet-report.js report --month YYYY-MM");
+    console.error("  node scripts/bet-report.js publish");
     process.exitCode = 1;
   }
 }
