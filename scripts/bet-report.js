@@ -319,15 +319,16 @@ function renderRows(rows) {
 
 function buildReport(month) {
   const snapshots = loadSnapshots(month);
-  if (snapshots.length < 2) {
-    throw new Error(`Need at least two valid snapshots for ${month}; found ${snapshots.length}.`);
-  }
+  const hasSnapshots = snapshots.length > 0;
+  const startSnapshot = hasSnapshots ? snapshots[0] : null;
+  const endSnapshot = hasSnapshots ? snapshots[snapshots.length - 1] : null;
+  let rows = [];
 
-  const startSnapshot = snapshots[0];
-  const endSnapshot = snapshots[snapshots.length - 1];
-  const rows = calculatePerformance(startSnapshot, endSnapshot);
-  if (rows.length === 0) {
-    throw new Error(`No overlapping BET symbols found for ${month}.`);
+  if (hasSnapshots) {
+    rows = calculatePerformance(startSnapshot, endSnapshot);
+    if (rows.length === 0) {
+      throw new Error(`No overlapping BET symbols found for ${month}.`);
+    }
   }
 
   const topRows = rows.slice(0, 5);
@@ -344,6 +345,36 @@ function buildReport(month) {
       </li>`,
     )
     .join("");
+
+  const noDataMessage = hasSnapshots
+    ? ""
+    : `<p><strong>Nu exista snapshoturi valide pentru luna ${escapeHtml(month)}.</strong></p>`;
+  const intervalUsed = hasSnapshots
+    ? `${escapeHtml(startSnapshot.sourceDay)} - ${escapeHtml(endSnapshot.sourceDay)}`
+    : "N/A";
+  const snapshotListHtml = hasSnapshots
+    ? `<ul>${snapshotList}</ul>`
+    : "<p>Nu exista snapshoturi disponibile.</p>";
+  const performanceSections = hasSnapshots
+    ? `
+  <h2>Top 5 creșteri</h2>
+  <table>
+    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
+    <tbody>${renderRows(topRows)}</tbody>
+  </table>
+
+  <h2>Top 5 scăderi</h2>
+  <table>
+    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
+    <tbody>${renderRows(bottomRows)}</tbody>
+  </table>
+
+  <h2>Tabel complet BET</h2>
+  <table>
+    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
+    <tbody>${renderRows(rows)}</tbody>
+  </table>`
+    : "";
 
   const html = `<!doctype html>
 <html lang="ro">
@@ -371,28 +402,13 @@ function buildReport(month) {
 
   <div class="meta">
     <p><strong>Metodologie:</strong> raportul folosește snapshoturile BVB arhivate local. Performanța este calculată între cel mai vechi și cel mai recent snapshot valid al lunii.</p>
-    <p><strong>Interval folosit:</strong> ${escapeHtml(startSnapshot.sourceDay)} - ${escapeHtml(endSnapshot.sourceDay)}.</p>
+    <p><strong>Interval folosit:</strong> ${intervalUsed}.</p>
     <p><strong>Snapshoturi disponibile:</strong></p>
-    <ul>${snapshotList}</ul>
+    ${snapshotListHtml}
+    ${noDataMessage}
   </div>
 
-  <h2>Top 5 creșteri</h2>
-  <table>
-    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
-    <tbody>${renderRows(topRows)}</tbody>
-  </table>
-
-  <h2>Top 5 scăderi</h2>
-  <table>
-    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
-    <tbody>${renderRows(bottomRows)}</tbody>
-  </table>
-
-  <h2>Tabel complet BET</h2>
-  <table>
-    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
-    <tbody>${renderRows(rows)}</tbody>
-  </table>
+  ${performanceSections}
 
   <p class="small">Acest raport are scop informativ și nu reprezintă recomandare de investiții.</p>
 </body>
