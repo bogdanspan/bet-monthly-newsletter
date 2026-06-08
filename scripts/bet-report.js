@@ -324,7 +324,7 @@ function renderTable(rows, options = {}) {
     { label: "Companie", type: "text", className: "" },
     { label: "Start", type: "number", className: "num" },
     { label: "Final", type: "number", className: "num" },
-    { label: "Performanta", type: "number", className: "num" },
+    { label: "Performanță", type: "number", className: "num" },
   ];
   const tableAttributes = [
     tableId ? `id="${escapeHtml(tableId)}"` : "",
@@ -446,10 +446,10 @@ function buildReport(month) {
     : "<p>Nu exista snapshoturi disponibile.</p>";
   const performanceSections = hasSnapshots
     ? `
-  <h2>Top 5 cresteri</h2>
+  <h2>Top 5 creșteri</h2>
   ${renderTable(topRows, { sortable: true, tableClass: "sortable-table top-table", tableId: "top-gainers" })}
 
-  <h2>Top 5 scaderi</h2>
+  <h2>Top 5 scăderi</h2>
   ${renderTable(bottomRows, { sortable: true, tableClass: "sortable-table top-table", tableId: "top-losers" })}
 
   <h2>Tabel complet BET</h2>
@@ -460,7 +460,7 @@ function buildReport(month) {
 <html lang="ro">
 <head>
   <meta charset="utf-8">
-  <title>BET - performanta lunara ${escapeHtml(month)}</title>
+  <title>BET - performanță lunară ${escapeHtml(month)}</title>
   <style>
     body { font-family: "Segoe UI", Arial, sans-serif; color: #17202a; margin: 36px; line-height: 1.5; }
     h1 { margin: 0 0 6px; color: #102a43; }
@@ -484,11 +484,11 @@ function buildReport(month) {
   </style>
 </head>
 <body>
-  <h1>BET - performanta lunara ${escapeHtml(month)}</h1>
+  <h1>BET - performanță lunară ${escapeHtml(month)}</h1>
   <p class="small">Generat la ${escapeHtml(created)}</p>
 
   <div class="meta">
-    <p><strong>Metodologie:</strong> raportul foloseste snapshoturile BVB arhivate local. Performanta este calculata intre cel mai vechi si cel mai recent snapshot valid al lunii.</p>
+    <p><strong>Metodologie:</strong> raportul folosește snapshoturile BVB arhivate local. Performanța este calculată între cel mai vechi și cel mai recent snapshot valid al lunii.</p>
     <p><strong>Interval folosit:</strong> ${intervalUsed}.</p>
     <p><strong>Snapshoturi disponibile:</strong></p>
     ${snapshotListHtml}
@@ -497,7 +497,7 @@ function buildReport(month) {
 
   ${performanceSections}
 
-  <p class="small">Acest raport are scop informativ si nu reprezinta recomandare de investitii.</p>
+  <p class="small">Acest raport are scop informativ și nu reprezintă recomandare de investiții.</p>
   ${sortingScript()}
 </body>
 </html>
