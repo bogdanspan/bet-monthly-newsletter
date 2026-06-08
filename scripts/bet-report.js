@@ -355,6 +355,7 @@ function sortingScript() {
   return `
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const textCollator = new Intl.Collator("ro-RO", { sensitivity: "base" });
       const getCellValue = (row, columnIndex, sortType) => {
         const cell = row.children[columnIndex];
         if (!cell) return sortType === "number" ? 0 : "";
@@ -365,7 +366,7 @@ function sortingScript() {
           return Number.isNaN(numericValue) ? 0 : numericValue;
         }
 
-        return rawValue.toLocaleLowerCase("ro-RO");
+        return rawValue;
       };
 
       document.querySelectorAll("table[data-sortable='true']").forEach((table) => {
@@ -383,6 +384,11 @@ function sortingScript() {
             rows.sort((leftRow, rightRow) => {
               const leftValue = getCellValue(leftRow, columnIndex, sortType);
               const rightValue = getCellValue(rightRow, columnIndex, sortType);
+
+              if (sortType === "text") {
+                const comparison = textCollator.compare(leftValue, rightValue);
+                return nextDirection === "asc" ? comparison : -comparison;
+              }
 
               if (leftValue < rightValue) return nextDirection === "asc" ? -1 : 1;
               if (leftValue > rightValue) return nextDirection === "asc" ? 1 : -1;
