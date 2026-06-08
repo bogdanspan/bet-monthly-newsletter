@@ -438,14 +438,109 @@ function renderRows(rows) {
     .map(
       (row) => `
       <tr>
-        <td>${escapeHtml(row.symbol)}</td>
-        <td>${escapeHtml(row.name)}</td>
-        <td class="num">${formatNumber(row.startClose)}</td>
-        <td class="num">${formatNumber(row.endClose)}</td>
-        <td class="num ${percentClass(row.performance)}">${formatPercent(row.performance)}</td>
+        <td${useSortData ? ` data-sort-value="${escapeHtml(row.symbol)}"` : ""}>${escapeHtml(row.symbol)}</td>
+        <td${useSortData ? ` data-sort-value="${escapeHtml(row.name)}"` : ""}>${escapeHtml(row.name)}</td>
+        <td class="num"${useSortData ? ` data-sort-value="${escapeHtml(row.startClose)}"` : ""}>${formatNumber(row.startClose)}</td>
+        <td class="num"${useSortData ? ` data-sort-value="${escapeHtml(row.endClose)}"` : ""}>${formatNumber(row.endClose)}</td>
+        <td class="num ${percentClass(row.performance)}"${useSortData ? ` data-sort-value="${escapeHtml(row.performance)}"` : ""}>${formatPercent(row.performance)}</td>
       </tr>`,
     )
     .join("");
+}
+
+function renderTable(rows, options = {}) {
+  const { sortable = false, tableClass = "", tableId = "" } = options;
+  const headers = [
+    { label: "Simbol", type: "text", className: "" },
+    { label: "Companie", type: "text", className: "" },
+    { label: "Start", type: "number", className: "num" },
+    { label: "Final", type: "number", className: "num" },
+    { label: "Performanță", type: "number", className: "num" },
+  ];
+  const tableAttributes = [
+    tableId ? `id="${escapeHtml(tableId)}"` : "",
+    tableClass ? `class="${escapeHtml(tableClass)}"` : "",
+    sortable ? 'data-sortable="true"' : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const headHtml = headers
+    .map((header, index) => {
+      if (!sortable) {
+        return `<th${header.className ? ` class="${header.className}"` : ""}>${header.label}</th>`;
+      }
+
+      const classes = [header.className, "sortable-column"].filter(Boolean).join(" ");
+      return `<th class="${classes}" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="${index}" data-sort-type="${header.type}" data-direction="">${header.label}<span class="sort-indicator" aria-hidden="true"></span></button></th>`;
+    })
+    .join("");
+
+  return `
+  <table${tableAttributes ? ` ${tableAttributes}` : ""}>
+    <thead><tr>${headHtml}</tr></thead>
+    <tbody>${renderRows(rows, sortable)}</tbody>
+  </table>`;
+}
+
+function sortingScript() {
+  return `
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const textCollator = new Intl.Collator("ro-RO", { sensitivity: "base" });
+      const getCellValue = (row, columnIndex, sortType) => {
+        const cell = row.children[columnIndex];
+        if (!cell) return sortType === "number" ? 0 : "";
+
+        const rawValue = cell.dataset.sortValue ?? cell.textContent ?? "";
+        if (sortType === "number") {
+          const numericValue = Number(rawValue);
+          return Number.isNaN(numericValue) ? 0 : numericValue;
+        }
+
+        return rawValue;
+      };
+
+      document.querySelectorAll("table[data-sortable='true']").forEach((table) => {
+        const tbody = table.querySelector("tbody");
+        const buttons = table.querySelectorAll(".sort-button");
+        if (!tbody || buttons.length === 0) return;
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const columnIndex = Number(button.dataset.columnIndex);
+            const sortType = button.dataset.sortType || "text";
+            const nextDirection = button.dataset.direction === "asc" ? "desc" : "asc";
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+
+            rows.sort((leftRow, rightRow) => {
+              const leftValue = getCellValue(leftRow, columnIndex, sortType);
+              const rightValue = getCellValue(rightRow, columnIndex, sortType);
+
+              if (sortType === "text") {
+                const comparison = textCollator.compare(leftValue, rightValue);
+                return nextDirection === "asc" ? comparison : -comparison;
+              }
+
+              if (leftValue < rightValue) return nextDirection === "asc" ? -1 : 1;
+              if (leftValue > rightValue) return nextDirection === "asc" ? 1 : -1;
+              return 0;
+            });
+
+            rows.forEach((row) => tbody.appendChild(row));
+
+            buttons.forEach((otherButton) => {
+              const isActive = otherButton === button;
+              const th = otherButton.closest("th");
+              otherButton.dataset.direction = isActive ? nextDirection : "";
+              if (th) {
+                th.setAttribute("aria-sort", isActive ? nextDirection : "none");
+              }
+            });
+          });
+        });
+      });
+    });
+  </script>`;
 }
 
 function buildReport(month) {
@@ -490,22 +585,13 @@ function buildReport(month) {
   const performanceSections = hasSnapshots
     ? `
   <h2>Top 5 creșteri</h2>
-  <table>
-    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
-    <tbody>${renderRows(topRows)}</tbody>
-  </table>
+  ${renderTable(topRows, { sortable: true, tableClass: "sortable-table top-table", tableId: "top-gainers" })}
 
   <h2>Top 5 scăderi</h2>
-  <table>
-    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
-    <tbody>${renderRows(bottomRows)}</tbody>
-  </table>
+  ${renderTable(bottomRows, { sortable: true, tableClass: "sortable-table top-table", tableId: "top-losers" })}
 
   <h2>Tabel complet BET</h2>
-  <table>
-    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
-    <tbody>${renderRows(rows)}</tbody>
-  </table>`
+  ${renderTable(rows, { sortable: true, tableClass: "sortable-table full-table", tableId: "bet-full-table" })}`
     : "";
 
   const html = `<!doctype html>
@@ -521,6 +607,13 @@ function buildReport(month) {
     table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 14px; }
     th { background: #102a43; color: white; text-align: left; padding: 8px; }
     td { border-bottom: 1px solid #d9e2ec; padding: 7px 8px; vertical-align: top; }
+    .sortable-column { padding: 0; }
+    .sort-button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 0; background: transparent; color: inherit; font: inherit; font-weight: 700; padding: 8px; cursor: pointer; text-align: inherit; }
+    .sort-button:hover { background: rgba(255, 255, 255, 0.08); }
+    .sort-button:focus-visible { outline: 2px solid #9fb3c8; outline-offset: -2px; }
+    .sort-indicator { width: 12px; flex: 0 0 12px; text-align: center; color: #d9e2ec; }
+    .sort-button[data-direction="asc"] .sort-indicator::before { content: "\\25B2"; color: #ffffff; }
+    .sort-button[data-direction="desc"] .sort-indicator::before { content: "\\25BC"; color: #ffffff; }
     .num { text-align: right; white-space: nowrap; }
     .gain { color: #0f7b45; font-weight: 700; }
     .loss { color: #b42318; font-weight: 700; }
@@ -545,6 +638,7 @@ function buildReport(month) {
   ${performanceSections}
 
   <p class="small">Acest raport are scop informativ și nu reprezintă recomandare de investiții.</p>
+  ${sortingScript()}
 </body>
 </html>
 `;

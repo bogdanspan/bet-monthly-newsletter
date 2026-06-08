@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <title>BET - performanță lunară 2026-05</title>
+  <style>
+    body { font-family: "Segoe UI", Arial, sans-serif; color: #17202a; margin: 36px; line-height: 1.5; }
+    h1 { margin: 0 0 6px; color: #102a43; }
+    h2 { margin-top: 28px; color: #102a43; border-bottom: 1px solid #d9e2ec; padding-bottom: 6px; }
+    .meta { padding: 12px 14px; margin: 16px 0; border-left: 4px solid #1f7a8c; background: #f5f8fb; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 14px; }
+    th { background: #102a43; color: white; text-align: left; padding: 8px; }
+    td { border-bottom: 1px solid #d9e2ec; padding: 7px 8px; vertical-align: top; }
+    .sortable-column { padding: 0; }
+    .sort-button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 0; background: transparent; color: inherit; font: inherit; font-weight: 700; padding: 8px; cursor: pointer; text-align: inherit; }
+    .sort-button:hover { background: rgba(255, 255, 255, 0.08); }
+    .sort-button:focus-visible { outline: 2px solid #9fb3c8; outline-offset: -2px; }
+    .sort-indicator { width: 12px; flex: 0 0 12px; text-align: center; color: #d9e2ec; }
+    .sort-button[data-direction="asc"] .sort-indicator::before { content: "\25B2"; color: #ffffff; }
+    .sort-button[data-direction="desc"] .sort-indicator::before { content: "\25BC"; color: #ffffff; }
+    .num { text-align: right; white-space: nowrap; }
+    .gain { color: #0f7b45; font-weight: 700; }
+    .loss { color: #b42318; font-weight: 700; }
+    .flat { color: #52606d; font-weight: 700; }
+    .small { color: #52606d; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>BET - performanță lunară 2026-05</h1>
+  <p class="small">Generat la 2026-06-01_14-15-48</p>
+
+  <div class="meta">
+    <p><strong>Metodologie:</strong> raportul folosește snapshoturile BVB arhivate local. Performanța este calculată între cel mai vechi și cel mai recent snapshot valid al lunii.</p>
+    <p><strong>Interval folosit:</strong> 20260522 - 20260529.</p>
+    <p><strong>Snapshoturi disponibile:</strong></p>
+    <ul>
+      <li>
+        20260522: 20 companii BET,
+        sursa: <a href="https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx?day=20260522&amp;type=s&amp;filetype=csv&amp;lang=en">https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx?day=20260522&amp;type=s&amp;filetype=csv&amp;lang=en</a>
+      </li>
+      <li>
+        20260528: 20 companii BET,
+        sursa: <a href="https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx?day=20260528&amp;type=s&amp;filetype=csv&amp;lang=en">https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx?day=20260528&amp;type=s&amp;filetype=csv&amp;lang=en</a>
+      </li>
+      <li>
+        20260529: 20 companii BET,
+        sursa: <a href="https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx?day=20260529&amp;type=s&amp;filetype=csv&amp;lang=en">https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx?day=20260529&amp;type=s&amp;filetype=csv&amp;lang=en</a>
+      </li></ul>
+    
+  </div>
+
+  
+  <h2>Top 5 creșteri</h2>
+  <table>
+    <thead><tr><th>Simbol</th><th>Companie</th><th class="num">Start</th><th class="num">Final</th><th class="num">Performanță</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>DIGI</td>
+        <td>Digi Communications N.V.</td>
+        <td class="num">45,9000</td>
+        <td class="num">48,5500</td>
+        <td class="num gain">+5,77%</td>
+      </tr>
+      <tr>
+        <td>SFG</td>
+        <td>Sphera Franchise Group</td>
+        <td class="num">36,5000</td>
+        <td class="num">37,7000</td>
+        <td class="num gain">+3,29%</td>
+      </tr>
+      <tr>
+        <td>AQ</td>
+        <td>AQUILA PART PROD COM</td>
+        <td class="num">1,4600</td>
+        <td class="num">1,4800</td>
+        <td class="num gain">+1,37%</td>
+      </tr>
+      <tr>
+        <td>SNP</td>
+        <td>OMV PETROM S.A.</td>
+        <td class="num">1,0480</td>
+        <td class="num">1,0520</td>
+        <td class="num gain">+0,38%</td>
+      </tr>
+      <tr>
+        <td>TEL</td>
+        <td>C.N.T.E.E. TRANSELECTRICA</td>
+        <td class="num">90,0000</td>
+        <td class="num">90,1000</td>
+        <td class="num gain">+0,11%</td>
+      </tr></tbody>
+  </table>
+
+  <h2>Top 5 scăderi</h2>
+  <table id="top-losers" class="sortable-table top-table" data-sortable="true">
+    <thead><tr><th class="sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="0" data-sort-type="text" data-direction="">Simbol<span class="sort-indicator" aria-hidden="true"></span></button></th><th class="sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="1" data-sort-type="text" data-direction="">Companie<span class="sort-indicator" aria-hidden="true"></span></button></th><th class="num sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="2" data-sort-type="number" data-direction="">Start<span class="sort-indicator" aria-hidden="true"></span></button></th><th class="num sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="3" data-sort-type="number" data-direction="">Final<span class="sort-indicator" aria-hidden="true"></span></button></th><th class="num sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="4" data-sort-type="number" data-direction="">Performanță<span class="sort-indicator" aria-hidden="true"></span></button></th></tr></thead>
+    <tbody>
+      <tr>
+        <td data-sort-value="SNG">SNG</td>
+        <td data-sort-value="S.N.G.N. ROMGAZ S.A.">S.N.G.N. ROMGAZ S.A.</td>
+        <td class="num" data-sort-value="14.5">14,5000</td>
+        <td class="num" data-sort-value="13.6">13,6000</td>
+        <td class="num loss" data-sort-value="-6.21">-6,21%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="ATB">ATB</td>
+        <td data-sort-value="ANTIBIOTICE S.A.">ANTIBIOTICE S.A.</td>
+        <td class="num" data-sort-value="2.155">2,1550</td>
+        <td class="num" data-sort-value="2.05">2,0500</td>
+        <td class="num loss" data-sort-value="-4.87">-4,87%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="FP">FP</td>
+        <td data-sort-value="FONDUL PROPRIETATEA">FONDUL PROPRIETATEA</td>
+        <td class="num" data-sort-value="0.603">0,6030</td>
+        <td class="num" data-sort-value="0.578">0,5780</td>
+        <td class="num loss" data-sort-value="-4.15">-4,15%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="H2O">H2O</td>
+        <td data-sort-value="S.P.E.E.H. HIDROELECTRICA S.A.">S.P.E.E.H. HIDROELECTRICA S.A.</td>
+        <td class="num" data-sort-value="182">182,0000</td>
+        <td class="num" data-sort-value="177">177,0000</td>
+        <td class="num loss" data-sort-value="-2.75">-2,75%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="CFH">CFH</td>
+        <td data-sort-value="CRIS-TIM FAMILY HOLDING">CRIS-TIM FAMILY HOLDING</td>
+        <td class="num" data-sort-value="27.25">27,2500</td>
+        <td class="num" data-sort-value="26.55">26,5500</td>
+        <td class="num loss" data-sort-value="-2.57">-2,57%</td>
+      </tr></tbody>
+  </table>
+
+  <h2>Tabel complet BET</h2>
+  <table id="bet-full-table" class="sortable-table full-table" data-sortable="true">
+    <thead><tr><th class="sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="0" data-sort-type="text" data-direction="">Simbol<span class="sort-indicator" aria-hidden="true"></span></button></th><th class="sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="1" data-sort-type="text" data-direction="">Companie<span class="sort-indicator" aria-hidden="true"></span></button></th><th class="num sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="2" data-sort-type="number" data-direction="">Start<span class="sort-indicator" aria-hidden="true"></span></button></th><th class="num sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="3" data-sort-type="number" data-direction="">Final<span class="sort-indicator" aria-hidden="true"></span></button></th><th class="num sortable-column" scope="col" aria-sort="none"><button type="button" class="sort-button" data-column-index="4" data-sort-type="number" data-direction="">Performanță<span class="sort-indicator" aria-hidden="true"></span></button></th></tr></thead>
+    <tbody>
+      <tr>
+        <td data-sort-value="EL">EL</td>
+        <td data-sort-value="SOCIETATEA ENERGETICA ELECTRICA S.A.">SOCIETATEA ENERGETICA ELECTRICA S.A.</td>
+        <td class="num" data-sort-value="33.6">33,6000</td>
+        <td class="num" data-sort-value="35">35,0000</td>
+        <td class="num gain" data-sort-value="4.17">+4,17%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="DIGI">DIGI</td>
+        <td data-sort-value="Digi Communications N.V.">Digi Communications N.V.</td>
+        <td class="num" data-sort-value="45.9">45,9000</td>
+        <td class="num" data-sort-value="47.5">47,5000</td>
+        <td class="num gain" data-sort-value="3.49">+3,49%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="PE">PE</td>
+        <td data-sort-value="Premier Energy PLC">Premier Energy PLC</td>
+        <td class="num" data-sort-value="53.2">53,2000</td>
+        <td class="num" data-sort-value="54.8">54,8000</td>
+        <td class="num gain" data-sort-value="3.01">+3,01%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="AQ">AQ</td>
+        <td data-sort-value="AQUILA PART PROD COM">AQUILA PART PROD COM</td>
+        <td class="num" data-sort-value="1.46">1,4600</td>
+        <td class="num" data-sort-value="1.485">1,4850</td>
+        <td class="num gain" data-sort-value="1.71">+1,71%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="SFG">SFG</td>
+        <td data-sort-value="Sphera Franchise Group">Sphera Franchise Group</td>
+        <td class="num" data-sort-value="36.5">36,5000</td>
+        <td class="num" data-sort-value="37.1">37,1000</td>
+        <td class="num gain" data-sort-value="1.64">+1,64%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="SNP">SNP</td>
+        <td data-sort-value="OMV PETROM S.A.">OMV PETROM S.A.</td>
+        <td class="num" data-sort-value="1.048">1,0480</td>
+        <td class="num" data-sort-value="1.056">1,0560</td>
+        <td class="num gain" data-sort-value="0.76">+0,76%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="SNN">SNN</td>
+        <td data-sort-value="S.N. NUCLEARELECTRICA S.A.">S.N. NUCLEARELECTRICA S.A.</td>
+        <td class="num" data-sort-value="69.5">69,5000</td>
+        <td class="num" data-sort-value="69.6">69,6000</td>
+        <td class="num gain" data-sort-value="0.14">+0,14%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="BRD">BRD</td>
+        <td data-sort-value="BRD - GROUPE SOCIETE GENERALE S.A.">BRD - GROUPE SOCIETE GENERALE S.A.</td>
+        <td class="num" data-sort-value="31.45">31,4500</td>
+        <td class="num" data-sort-value="31.45">31,4500</td>
+        <td class="num flat" data-sort-value="0">0,00%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="TGN">TGN</td>
+        <td data-sort-value="S.N.T.G.N. TRANSGAZ S.A.">S.N.T.G.N. TRANSGAZ S.A.</td>
+        <td class="num" data-sort-value="88.4">88,4000</td>
+        <td class="num" data-sort-value="88.4">88,4000</td>
+        <td class="num flat" data-sort-value="0">0,00%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="TEL">TEL</td>
+        <td data-sort-value="C.N.T.E.E. TRANSELECTRICA">C.N.T.E.E. TRANSELECTRICA</td>
+        <td class="num" data-sort-value="90">90,0000</td>
+        <td class="num" data-sort-value="90">90,0000</td>
+        <td class="num flat" data-sort-value="0">0,00%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="M">M</td>
+        <td data-sort-value="MedLife S.A.">MedLife S.A.</td>
+        <td class="num" data-sort-value="11.7">11,7000</td>
+        <td class="num" data-sort-value="11.6">11,6000</td>
+        <td class="num loss" data-sort-value="-0.85">-0,85%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="ONE">ONE</td>
+        <td data-sort-value="ONE UNITED PROPERTIES">ONE UNITED PROPERTIES</td>
+        <td class="num" data-sort-value="30.45">30,4500</td>
+        <td class="num" data-sort-value="30.1">30,1000</td>
+        <td class="num loss" data-sort-value="-1.15">-1,15%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="TRP">TRP</td>
+        <td data-sort-value="TERAPLAST SA">TERAPLAST SA</td>
+        <td class="num" data-sort-value="0.445">0,4450</td>
+        <td class="num" data-sort-value="0.4395">0,4395</td>
+        <td class="num loss" data-sort-value="-1.24">-1,24%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="TTS">TTS</td>
+        <td data-sort-value="TTS (TRANSPORT TRADE SERVICES)">TTS (TRANSPORT TRADE SERVICES)</td>
+        <td class="num" data-sort-value="5.74">5,7400</td>
+        <td class="num" data-sort-value="5.66">5,6600</td>
+        <td class="num loss" data-sort-value="-1.39">-1,39%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="TLV">TLV</td>
+        <td data-sort-value="BANCA TRANSILVANIA S.A.">BANCA TRANSILVANIA S.A.</td>
+        <td class="num" data-sort-value="38.64">38,6400</td>
+        <td class="num" data-sort-value="38">38,0000</td>
+        <td class="num loss" data-sort-value="-1.66">-1,66%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="CFH">CFH</td>
+        <td data-sort-value="CRIS-TIM FAMILY HOLDING">CRIS-TIM FAMILY HOLDING</td>
+        <td class="num" data-sort-value="27.25">27,2500</td>
+        <td class="num" data-sort-value="26.55">26,5500</td>
+        <td class="num loss" data-sort-value="-2.57">-2,57%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="H2O">H2O</td>
+        <td data-sort-value="S.P.E.E.H. HIDROELECTRICA S.A.">S.P.E.E.H. HIDROELECTRICA S.A.</td>
+        <td class="num" data-sort-value="182">182,0000</td>
+        <td class="num" data-sort-value="177">177,0000</td>
+        <td class="num loss" data-sort-value="-2.75">-2,75%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="FP">FP</td>
+        <td data-sort-value="FONDUL PROPRIETATEA">FONDUL PROPRIETATEA</td>
+        <td class="num" data-sort-value="0.603">0,6030</td>
+        <td class="num" data-sort-value="0.578">0,5780</td>
+        <td class="num loss" data-sort-value="-4.15">-4,15%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="ATB">ATB</td>
+        <td data-sort-value="ANTIBIOTICE S.A.">ANTIBIOTICE S.A.</td>
+        <td class="num" data-sort-value="2.155">2,1550</td>
+        <td class="num" data-sort-value="2.05">2,0500</td>
+        <td class="num loss" data-sort-value="-4.87">-4,87%</td>
+      </tr>
+      <tr>
+        <td data-sort-value="SNG">SNG</td>
+        <td data-sort-value="S.N.G.N. ROMGAZ S.A.">S.N.G.N. ROMGAZ S.A.</td>
+        <td class="num" data-sort-value="14.5">14,5000</td>
+        <td class="num" data-sort-value="13.6">13,6000</td>
+        <td class="num loss" data-sort-value="-6.21">-6,21%</td>
+      </tr></tbody>
+  </table>
+
+  <p class="small">Acest raport are scop informativ și nu reprezintă recomandare de investiții.</p>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const textCollator = new Intl.Collator("ro-RO", { sensitivity: "base" });
+      const getCellValue = (row, columnIndex, sortType) => {
+        const cell = row.children[columnIndex];
+        if (!cell) return sortType === "number" ? 0 : "";
+
+        const rawValue = cell.dataset.sortValue ?? cell.textContent ?? "";
+        if (sortType === "number") {
+          const numericValue = Number(rawValue);
+          return Number.isNaN(numericValue) ? 0 : numericValue;
+        }
+
+        return rawValue;
+      };
+
+      document.querySelectorAll("table[data-sortable='true']").forEach((table) => {
+        const tbody = table.querySelector("tbody");
+        const buttons = table.querySelectorAll(".sort-button");
+        if (!tbody || buttons.length === 0) return;
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const columnIndex = Number(button.dataset.columnIndex);
+            const sortType = button.dataset.sortType || "text";
+            const nextDirection = button.dataset.direction === "asc" ? "desc" : "asc";
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+
+            rows.sort((leftRow, rightRow) => {
+              const leftValue = getCellValue(leftRow, columnIndex, sortType);
+              const rightValue = getCellValue(rightRow, columnIndex, sortType);
+
+              if (sortType === "text") {
+                const comparison = textCollator.compare(leftValue, rightValue);
+                return nextDirection === "asc" ? comparison : -comparison;
+              }
+
+              if (leftValue < rightValue) return nextDirection === "asc" ? -1 : 1;
+              if (leftValue > rightValue) return nextDirection === "asc" ? 1 : -1;
+              return 0;
+            });
+
+            rows.forEach((row) => tbody.appendChild(row));
+
+            buttons.forEach((otherButton) => {
+              const isActive = otherButton === button;
+              const th = otherButton.closest("th");
+              otherButton.dataset.direction = isActive ? nextDirection : "";
+              if (th) {
+                th.setAttribute("aria-sort", isActive ? nextDirection : "none");
+              }
+            });
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
