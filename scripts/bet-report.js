@@ -9,6 +9,16 @@ const DATA_DIR = path.join("data", "bvb_weekly_snapshots");
 const DOCS_DIR = "docs";
 const REPORTS_DIR = path.join(DOCS_DIR, "reports");
 const CONFIG_PATH = path.join("config", "bet_symbols.json");
+const ETF_SYMBOL = "TVBETETF";
+const ETF_SOURCE_URL = `https://m.bvb.ro/FinancialInstruments/Details/FinancialInstrumentsDetails.aspx?s=${ETF_SYMBOL}`;
+const ETF_MONTH_OVERRIDES = {
+  "2026-05": {
+    symbol: ETF_SYMBOL,
+    price: 50.52,
+    priceTimestamp: "2026-05-29 17:50:06",
+    sourceUrl: "https://bvb.ro/FinancialInstruments/Details/FinancialInstrumentsDetails.aspx?s=TVBETETF",
+  },
+};
 
 function nowStamp() {
   const now = new Date();
@@ -27,6 +37,10 @@ function nowStamp() {
 function readSymbols() {
   const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
   return config.symbols;
+}
+
+function readTrackedSymbols() {
+  return [...readSymbols(), ETF_SYMBOL];
 }
 
 function ensureDir(dirPath) {
@@ -207,8 +221,20 @@ function defaultSnapshotDay() {
 
 function normalizeSnapshot(day, sourceUrl, rows, insecureSslFallback) {
   const betSymbols = new Set(readSymbols());
+  const trackedSymbols = new Set(readTrackedSymbols());
   const instruments = rows
     .filter((row) => betSymbols.has(row.Symbol))
+    .map((row) => ({
+      symbol: row.Symbol,
+      name: row.Name || "",
+      market: row.Market || "",
+      close: parseNumber(row.Close),
+      refPrice: parseNumber(row["Ref. price"]),
+      volume: parseNumber(row.Volume),
+      value: parseNumber(row.Value),
+    }));
+  const trackedInstruments = rows
+    .filter((row) => trackedSymbols.has(row.Symbol))
     .map((row) => ({
       symbol: row.Symbol,
       name: row.Name || "",
@@ -228,6 +254,7 @@ function normalizeSnapshot(day, sourceUrl, rows, insecureSslFallback) {
     rowCount: rows.length,
     betRowCount: instruments.length,
     instruments,
+    trackedInstruments,
   };
 }
 
@@ -255,6 +282,7 @@ function loadSnapshots(month) {
       snapshot.sourceUrl = snapshot.sourceUrl || snapshot.source_url;
       snapshot.betRowCount = snapshot.betRowCount ?? snapshot.bet_row_count;
       snapshot.rowCount = snapshot.rowCount ?? snapshot.row_count;
+      snapshot.trackedInstruments = snapshot.trackedInstruments || snapshot.instruments || [];
       snapshot.filePath = filePath;
       return snapshot;
     })
@@ -296,13 +324,116 @@ function formatPercent(value) {
   return `${sign}${value.toFixed(2)}%`.replace(".", ",");
 }
 
+function formatDelta(value, digits = 4) {
+  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${sign}${formatNumber(Math.abs(value), digits)}`;
+}
+
 function percentClass(value) {
   if (value > 0) return "gain";
   if (value < 0) return "loss";
   return "flat";
 }
 
-function renderRows(rows, useSortData = false) {
+function parseReportMonthFromFilename(fileName) {
+  const match = fileName.match(/^bet_monthly_performance_(\d{4}-\d{2})_(.+)\.html$/);
+  return match ? match[1] : null;
+}
+
+function parseEtfSnapshotFromReport(reportPath) {
+  const html = fs.readFileSync(reportPath, "utf8");
+  const match = html.match(/<div class="etf-report-data"[^>]*data-etf-symbol="([^"]+)"[^>]*data-etf-price="([^"]+)"[^>]*data-etf-price-timestamp="([^"]+)"[^>]*data-etf-source-url="([^"]*)"[^>]*><\/div>/);
+  if (!match) return null;
+
+  return {
+    symbol: match[1],
+    price: Number(match[2]),
+    priceTimestamp: match[3],
+    sourceUrl: match[4],
+  };
+}
+
+function loadPreviousEtfSnapshot(month) {
+  if (!fs.existsSync(REPORTS_DIR)) return null;
+
+  const previousFiles = fs
+    .readdirSync(REPORTS_DIR)
+    .filter((file) => file.endsWith(".html"))
+    .map((file) => ({
+      file,
+      month: parseReportMonthFromFilename(file),
+    }))
+    .filter((entry) => entry.month && entry.month < month)
+    .sort((a, b) => {
+      const monthCompare = b.month.localeCompare(a.month);
+      return monthCompare !== 0 ? monthCompare : b.file.localeCompare(a.file);
+    });
+
+  for (const entry of previousFiles) {
+    const reportPath = path.join(REPORTS_DIR, entry.file);
+    const snapshot = parseEtfSnapshotFromReport(reportPath);
+    if (snapshot && snapshot.symbol === ETF_SYMBOL && Number.isFinite(snapshot.price)) {
+      return snapshot;
+    }
+  }
+
+  return null;
+}
+
+function extractEtfFromSnapshot(snapshot) {
+  const instruments = snapshot?.trackedInstruments || [];
+  const instrument = instruments.find((item) => item.symbol === ETF_SYMBOL && Number.isFinite(item.close));
+  if (!instrument) return null;
+
+  return {
+    symbol: instrument.symbol,
+    price: instrument.close,
+    priceTimestamp: String(snapshot.sourceDay || ""),
+    sourceUrl: snapshot.sourceUrl || ETF_SOURCE_URL,
+  };
+}
+
+function resolveEtfSnapshot(month, snapshots) {
+  const override = ETF_MONTH_OVERRIDES[month];
+  if (override) return override;
+
+  for (let index = snapshots.length - 1; index >= 0; index -= 1) {
+    const etfSnapshot = extractEtfFromSnapshot(snapshots[index]);
+    if (etfSnapshot) return etfSnapshot;
+  }
+
+  return null;
+}
+
+function buildEtfSection(month, snapshots) {
+  const current = resolveEtfSnapshot(month, snapshots);
+  if (!current) {
+    return {
+      html: `<p><strong>TVBETETF:</strong> valoarea nu a putut fi determinata pentru luna ${escapeHtml(month)}.</p>`,
+      dataHtml: "",
+    };
+  }
+
+  const previous = loadPreviousEtfSnapshot(month);
+  let comparisonHtml = "<p><strong>Evolutie fata de luna trecuta:</strong> fara baza de comparatie.</p>";
+
+  if (previous && previous.price) {
+    const delta = current.price - previous.price;
+    const deltaPercent = ((current.price / previous.price) - 1) * 100;
+    comparisonHtml = `<p><strong>Evolutie fata de luna trecuta:</strong> <span class="${percentClass(delta)}">${escapeHtml(formatDelta(delta))} lei (${escapeHtml(formatPercent(deltaPercent))})</span>, fata de ${escapeHtml(formatNumber(previous.price))} lei.</p>`;
+  }
+
+  return {
+    html: `
+    <p><strong>TVBETETF la BVB:</strong> ${escapeHtml(formatNumber(current.price))} lei.</p>
+    <p><strong>Data valorii ETF:</strong> ${escapeHtml(current.priceTimestamp)}.</p>
+    <p><strong>Sursa ETF:</strong> <a href="${escapeHtml(current.sourceUrl)}">${escapeHtml(current.sourceUrl)}</a>.</p>
+    ${comparisonHtml}`,
+    dataHtml: `<div class="etf-report-data" data-etf-symbol="${escapeHtml(current.symbol)}" data-etf-price="${escapeHtml(current.price.toFixed(4))}" data-etf-price-timestamp="${escapeHtml(current.priceTimestamp)}" data-etf-source-url="${escapeHtml(current.sourceUrl)}"></div>`,
+  };
+}
+
+function renderRows(rows) {
   return rows
     .map(
       (row) => `
@@ -450,6 +581,7 @@ function buildReport(month) {
   const snapshotListHtml = hasSnapshots
     ? `<ul>${snapshotList}</ul>`
     : "<p>Nu exista snapshoturi disponibile.</p>";
+  const etfSection = buildEtfSection(month, snapshots);
   const performanceSections = hasSnapshots
     ? `
   <h2>Top 5 creșteri</h2>
@@ -499,6 +631,8 @@ function buildReport(month) {
     <p><strong>Snapshoturi disponibile:</strong></p>
     ${snapshotListHtml}
     ${noDataMessage}
+    ${etfSection.html}
+    ${etfSection.dataHtml}
   </div>
 
   ${performanceSections}
