@@ -433,7 +433,7 @@ function buildEtfSection(month, snapshots) {
   };
 }
 
-function renderRows(rows) {
+function renderRows(rows, useSortData = false) {
   return rows
     .map(
       (row) => `
