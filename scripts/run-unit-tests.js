@@ -6,6 +6,7 @@ const path = require("node:path");
 const report = require(path.resolve(__dirname, "bet-report.js"));
 
 function testParseCsv() {
+  // Verify the CSV parser keeps quoted commas and escaped quotes intact.
   const rows = report.parseCsv([
     'Symbol,Name,Close',
     'TLV,"BANCA, ""TRANSILVANIA""",38.64',
@@ -18,6 +19,7 @@ function testParseCsv() {
 }
 
 function testCalculatePerformance() {
+  // Verify performance is calculated correctly and sorted from best to worst.
   const startSnapshot = {
     instruments: [
       { symbol: "TLV", name: "TLV", close: 10, value: 1000 },
@@ -41,6 +43,7 @@ function testCalculatePerformance() {
 }
 
 function testBuildEtfSection() {
+  // Verify the ETF section exposes the HTML copy and machine-readable data attributes.
   const section = report.buildEtfSection("2026-05", []);
 
   assert.match(section.html, /TVBETETF la BVB/);
@@ -49,6 +52,7 @@ function testBuildEtfSection() {
 }
 
 function main() {
+  // Run the lightweight unit checks that guard core report helpers.
   testParseCsv();
   testCalculatePerformance();
   testBuildEtfSection();

@@ -18,6 +18,7 @@ function readJson(filePath) {
 }
 
 function calculateExpectedRows() {
+  // Rebuild the expected ranking from archived fixtures instead of trusting generated HTML.
   const config = readJson(path.join(repoRoot, "config", "bet_symbols.json"));
   const trackedSymbols = config.symbols;
   const snapshots = [
@@ -46,6 +47,7 @@ function calculateExpectedRows() {
 }
 
 function extractTableRows(html, tableId) {
+  // Extract rendered table cells so we can assert visible report content end-to-end.
   const tableMatch = html.match(new RegExp(`<table[^>]*id="${tableId}"[\\s\\S]*?<tbody>([\\s\\S]*?)<\\/tbody>`, "i"));
   assert.ok(tableMatch, `Missing table ${tableId}`);
 
@@ -57,6 +59,7 @@ function extractTableRows(html, tableId) {
 }
 
 function run() {
+  // Generate the report in a temp docs folder to avoid polluting the checked-in artifacts.
   fs.mkdirSync(reportsDir, { recursive: true });
 
   const env = {
@@ -83,6 +86,7 @@ function run() {
   const topTable = extractTableRows(html, "top-gainers");
   const losersTable = extractTableRows(html, "top-losers");
 
+  // Check the main user-visible facts and rankings rendered into the report.
   assert.match(html, /Interval folosit:<\/strong> 20260522 - 20260529\./);
   assert.match(html, /TVBETETF la BVB:<\/strong> 50,5200 lei\./);
   assert.match(html, /data-etf-symbol="TVBETETF"/);
@@ -93,6 +97,7 @@ function run() {
   assert.equal(fullTable[fullTable.length - 1][0], expectedRows[expectedRows.length - 1].symbol, "Full table last row should be lowest performer");
 
   const indexHtml = fs.readFileSync(indexPath, "utf8");
+  // Verify publish index generation still links to the newly created report file.
   assert.match(indexHtml, new RegExp(`reports/bet_monthly_performance_${fixturesMonth}_${fixtureStamp}\\.html`));
 
   console.log(`Regression report checks passed for ${reportPath}`);
