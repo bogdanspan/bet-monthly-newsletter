@@ -6,10 +6,10 @@ const https = require("https");
 const { Resend } = require("resend");
 
 const BASE_URL = "https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx";
-const DATA_DIR = path.join("data", "bvb_weekly_snapshots");
-const DOCS_DIR = "docs";
-const REPORTS_DIR = path.join(DOCS_DIR, "reports");
-const CONFIG_PATH = path.join("config", "bet_symbols.json");
+const DATA_DIR = process.env.BET_DATA_DIR || path.join("data", "bvb_weekly_snapshots");
+const DOCS_DIR = process.env.BET_DOCS_DIR || "docs";
+const REPORTS_DIR = process.env.BET_REPORTS_DIR || path.join(DOCS_DIR, "reports");
+const CONFIG_PATH = process.env.BET_CONFIG_PATH || path.join("config", "bet_symbols.json");
 const ETF_SYMBOL = "TVBETETF";
 const ETF_SOURCE_URL = `https://m.bvb.ro/FinancialInstruments/Details/FinancialInstrumentsDetails.aspx?s=${ETF_SYMBOL}`;
 const DEFAULT_SITE_URL = "https://bogdanspan.github.io/bet-monthly-newsletter";
@@ -23,6 +23,10 @@ const ETF_MONTH_OVERRIDES = {
 };
 
 function nowStamp() {
+  if (process.env.BET_NOW_STAMP) {
+    return process.env.BET_NOW_STAMP;
+  }
+
   const now = new Date();
   const pad = (value) => String(value).padStart(2, "0");
   return [
@@ -422,7 +426,11 @@ function buildEtfSectionData(month, snapshots) {
   }
 
   const previous = loadPreviousEtfSnapshot(month);
+<<<<<<< codex/send-report-by-mail
   let comparisonHtml = "<p><strong>Evolutie fata de luna trecuta:</strong> fara baza de comparatie.</p>";
+=======
+  let comparisonHtml = "<p><strong>Evoluție față de luna trecută:</strong> fără bază de comparație.</p>";
+>>>>>>> local
   let comparison = null;
 
   if (previous && previous.price) {
@@ -434,7 +442,11 @@ function buildEtfSectionData(month, snapshots) {
       deltaPercent,
       className: percentClass(delta),
     };
+<<<<<<< codex/send-report-by-mail
     comparisonHtml = `<p><strong>Evolutie fata de luna trecuta:</strong> <span class="${percentClass(delta)}">${escapeHtml(formatDelta(delta))} lei (${escapeHtml(formatPercent(deltaPercent))})</span>, fata de ${escapeHtml(formatNumber(previous.price))} lei.</p>`;
+=======
+    comparisonHtml = `<p><strong>Evoluție față de luna trecută:</strong> <span class="${percentClass(delta)}">${escapeHtml(formatDelta(delta))} lei (${escapeHtml(formatPercent(deltaPercent))})</span>, față de ${escapeHtml(formatNumber(previous.price))} lei.</p>`;
+>>>>>>> local
   }
 
   return {
@@ -587,7 +599,11 @@ function buildReportData(month) {
     startSnapshot,
     endSnapshot,
     intervalUsed: hasSnapshots ? `${startSnapshot.sourceDay} - ${endSnapshot.sourceDay}` : "N/A",
+<<<<<<< codex/send-report-by-mail
     noDataMessage: hasSnapshots ? "" : `Nu exista snapshoturi valide pentru luna ${month}.`,
+=======
+    noDataMessage: hasSnapshots ? "" : `Nu există snapshoturi valide pentru luna ${month}.`,
+>>>>>>> local
     rows,
     topRows: rows.slice(0, 5),
     bottomRows: [...rows].sort((a, b) => a.performance - b.performance).slice(0, 5),
@@ -608,6 +624,7 @@ function renderWebReport(reportData) {
 
   const snapshotListHtml = reportData.hasSnapshots
     ? `<ul>${snapshotList}</ul>`
+<<<<<<< codex/send-report-by-mail
     : "<p>Nu exista snapshoturi disponibile.</p>";
   const performanceSections = reportData.hasSnapshots
     ? `
@@ -615,6 +632,15 @@ function renderWebReport(reportData) {
   ${renderTable(reportData.topRows, { sortable: true, tableClass: "sortable-table top-table", tableId: "top-gainers" })}
 
   <h2>Top 5 scÄƒderi</h2>
+=======
+    : "<p>Nu există snapshoturi disponibile.</p>";
+  const performanceSections = reportData.hasSnapshots
+    ? `
+  <h2>Top 5 creșteri</h2>
+  ${renderTable(reportData.topRows, { sortable: true, tableClass: "sortable-table top-table", tableId: "top-gainers" })}
+
+  <h2>Top 5 scăderi</h2>
+>>>>>>> local
   ${renderTable(reportData.bottomRows, { sortable: true, tableClass: "sortable-table top-table", tableId: "top-losers" })}
 
   <h2>Tabel complet BET</h2>
@@ -625,7 +651,11 @@ function renderWebReport(reportData) {
 <html lang="ro">
 <head>
   <meta charset="utf-8">
+<<<<<<< codex/send-report-by-mail
   <title>BET - performanÈ›Äƒ lunarÄƒ ${escapeHtml(reportData.month)}</title>
+=======
+  <title>BET - performanță lunară ${escapeHtml(reportData.month)}</title>
+>>>>>>> local
   <style>
     body { font-family: "Segoe UI", Arial, sans-serif; color: #17202a; margin: 36px; line-height: 1.5; }
     h1 { margin: 0 0 6px; color: #102a43; }
@@ -649,11 +679,19 @@ function renderWebReport(reportData) {
   </style>
 </head>
 <body>
+<<<<<<< codex/send-report-by-mail
   <h1>BET - performanÈ›Äƒ lunarÄƒ ${escapeHtml(reportData.month)}</h1>
   <p class="small">Generat la ${escapeHtml(reportData.created)}</p>
 
   <div class="meta">
     <p><strong>Metodologie:</strong> raportul foloseÈ™te snapshoturile BVB arhivate local. PerformanÈ›a este calculatÄƒ Ã®ntre cel mai vechi È™i cel mai recent snapshot valid al lunii.</p>
+=======
+  <h1>BET - performanță lunară ${escapeHtml(reportData.month)}</h1>
+  <p class="small">Generat la ${escapeHtml(reportData.created)}</p>
+
+  <div class="meta">
+    <p><strong>Metodologie:</strong> raportul folosește snapshoturile BVB arhivate local. Performanța este calculată între cel mai vechi și cel mai recent snapshot valid al lunii.</p>
+>>>>>>> local
     <p><strong>Interval folosit:</strong> ${escapeHtml(reportData.intervalUsed)}.</p>
     <p><strong>Snapshoturi disponibile:</strong></p>
     ${snapshotListHtml}
@@ -670,6 +708,7 @@ function renderWebReport(reportData) {
 </html>
 `;
 }
+<<<<<<< codex/send-report-by-mail
 
 function reportUrlFromPath(reportPath) {
   const siteUrl = (process.env.MONTHLY_REPORT_SITE_URL || DEFAULT_SITE_URL).replace(/\/+$/, "");
@@ -854,6 +893,192 @@ async function sendMonthlyReportEmail({ month, reportUrl, reportData }) {
   const subject = `Raport lunar BVB luna ${month}`;
   const html = renderEmailReport(reportData, reportUrl);
 
+=======
+
+function reportUrlFromPath(reportPath) {
+  const siteUrl = (process.env.MONTHLY_REPORT_SITE_URL || DEFAULT_SITE_URL).replace(/\/+$/, "");
+  const relativePath = reportPath.replace(/\\/g, "/").replace(/^docs\//, "");
+  return `${siteUrl}/${relativePath}`;
+}
+
+function renderEmailTable(rows) {
+  if (rows.length === 0) {
+    return `<p style="margin:0 0 16px;color:#52606d;">Nu există date disponibile pentru această secțiune.</p>`;
+  }
+
+  const renderCell = (value, extraStyle = "") =>
+    `<td style="padding:10px 12px;border-bottom:1px solid #d9e2ec;vertical-align:top;${extraStyle}">${value}</td>`;
+
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;margin:0 0 20px;font-size:14px;">
+    <thead>
+      <tr>
+        <th align="left" style="background:#102a43;color:#ffffff;padding:10px 12px;">Simbol</th>
+        <th align="left" style="background:#102a43;color:#ffffff;padding:10px 12px;">Companie</th>
+        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Start</th>
+        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Final</th>
+        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Performanță</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows
+        .map((row) => {
+          const performanceStyle = `text-align:right;white-space:nowrap;color:${row.performance > 0 ? "#0f7b45" : row.performance < 0 ? "#b42318" : "#52606d"};font-weight:700;`;
+          return `
+      <tr>
+        ${renderCell(escapeHtml(row.symbol))}
+        ${renderCell(escapeHtml(row.name))}
+        ${renderCell(escapeHtml(formatNumber(row.startClose)), "text-align:right;white-space:nowrap;")}
+        ${renderCell(escapeHtml(formatNumber(row.endClose)), "text-align:right;white-space:nowrap;")}
+        ${renderCell(escapeHtml(formatPercent(row.performance)), performanceStyle)}
+      </tr>`;
+        })
+        .join("")}
+    </tbody>
+  </table>`;
+}
+
+function renderEmailReport(reportData, reportUrl) {
+  const snapshotItems = reportData.snapshots.length
+    ? reportData.snapshots
+        .map(
+          (snapshot) => `
+          <li style="margin:0 0 8px;">
+            ${escapeHtml(snapshot.sourceDay)}: ${escapeHtml(snapshot.betRowCount)} companii BET, sursa:
+            <a href="${escapeHtml(snapshot.sourceUrl)}" style="color:#0b7285;">${escapeHtml(snapshot.sourceUrl)}</a>
+          </li>`,
+        )
+        .join("")
+    : '<li style="margin:0 0 8px;">Nu există snapshoturi disponibile.</li>';
+
+  const etfHtml = reportData.etfSection.available
+    ? `
+      <p style="margin:0 0 10px;"><strong>TVBETETF la BVB:</strong> ${escapeHtml(formatNumber(reportData.etfSection.current.price))} lei.</p>
+      <p style="margin:0 0 10px;"><strong>Data valorii ETF:</strong> ${escapeHtml(reportData.etfSection.current.priceTimestamp)}.</p>
+      <p style="margin:0 0 10px;"><strong>Sursa ETF:</strong> <a href="${escapeHtml(reportData.etfSection.current.sourceUrl)}" style="color:#0b7285;">${escapeHtml(reportData.etfSection.current.sourceUrl)}</a>.</p>
+      ${
+        reportData.etfSection.comparison
+          ? `<p style="margin:0 0 10px;"><strong>Evoluție față de luna trecută:</strong> <span style="font-weight:700;color:${reportData.etfSection.comparison.delta > 0 ? "#0f7b45" : reportData.etfSection.comparison.delta < 0 ? "#b42318" : "#52606d"};">${escapeHtml(formatDelta(reportData.etfSection.comparison.delta))} lei (${escapeHtml(formatPercent(reportData.etfSection.comparison.deltaPercent))})</span>, față de ${escapeHtml(formatNumber(reportData.etfSection.comparison.previousPrice))} lei.</p>`
+          : '<p style="margin:0 0 10px;"><strong>Evoluție față de luna trecută:</strong> fără bază de comparație.</p>'
+      }`
+    : `<p style="margin:0 0 10px;"><strong>TVBETETF:</strong> valoarea nu a putut fi determinata pentru luna ${escapeHtml(reportData.month)}.</p>`;
+
+  return `<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raport lunar BVB luna ${escapeHtml(reportData.month)}</title>
+</head>
+<body style="margin:0;padding:24px;background:#f4f7fb;font-family:'Segoe UI',Arial,sans-serif;color:#17202a;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;">
+    <tr>
+      <td align="center">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="860" style="border-collapse:collapse;width:100%;max-width:860px;background:#ffffff;">
+          <tr>
+            <td style="padding:32px 28px 16px;">
+              <h1 style="margin:0 0 8px;color:#102a43;font-size:30px;line-height:1.2;">BET - performanță lunară ${escapeHtml(reportData.month)}</h1>
+              <p style="margin:0;color:#52606d;font-size:13px;">Generat la ${escapeHtml(reportData.created)}</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 28px 20px;">
+              <div style="padding:14px 16px;border-left:4px solid #1f7a8c;background:#f5f8fb;">
+                <p style="margin:0 0 10px;"><strong>Metodologie:</strong> raportul folosește snapshoturile BVB arhivate local. Performanța este calculată între cel mai vechi și cel mai recent snapshot valid al lunii.</p>
+                <p style="margin:0 0 10px;"><strong>Interval folosit:</strong> ${escapeHtml(reportData.intervalUsed)}.</p>
+                <p style="margin:0 0 10px;"><strong>Snapshoturi disponibile:</strong></p>
+                <ul style="margin:0 0 14px 18px;padding:0;">${snapshotItems}</ul>
+                ${reportData.noDataMessage ? `<p style="margin:0 0 10px;"><strong>${escapeHtml(reportData.noDataMessage)}</strong></p>` : ""}
+                ${etfHtml}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 28px 4px;">
+              <h2 style="margin:0 0 12px;color:#102a43;font-size:22px;border-bottom:1px solid #d9e2ec;padding-bottom:6px;">Top 5 creșteri</h2>
+              ${renderEmailTable(reportData.topRows)}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 28px 4px;">
+              <h2 style="margin:0 0 12px;color:#102a43;font-size:22px;border-bottom:1px solid #d9e2ec;padding-bottom:6px;">Top 5 scăderi</h2>
+              ${renderEmailTable(reportData.bottomRows)}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 28px 8px;">
+              <h2 style="margin:0 0 12px;color:#102a43;font-size:22px;border-bottom:1px solid #d9e2ec;padding-bottom:6px;">Tabel complet BET</h2>
+              ${renderEmailTable(reportData.rows)}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 28px 24px;">
+              <p style="margin:0 0 18px;">
+                <a href="${escapeHtml(reportUrl)}" style="display:inline-block;background:#0b7285;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:4px;font-weight:700;">Deschide raportul HTML complet</a>
+              </p>
+              <p style="margin:0;color:#52606d;font-size:13px;">Acest raport are scop informativ și nu reprezintă recomandare de investiții.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function findLatestReportPath(month) {
+  if (!fs.existsSync(REPORTS_DIR)) return null;
+
+  const candidates = fs
+    .readdirSync(REPORTS_DIR)
+    .filter((file) => file.startsWith(`bet_monthly_performance_${month}_`) && file.endsWith(".html"))
+    .sort()
+    .reverse();
+
+  return candidates.length > 0 ? path.join(REPORTS_DIR, candidates[0]) : null;
+}
+
+function parseRecipients(value) {
+  return String(value || "")
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
+function getEmailConfig() {
+  return {
+    enabled: String(process.env.MONTHLY_REPORT_EMAIL_ENABLED || "false").toLowerCase() === "true",
+    apiKey: process.env.RESEND_API_KEY || "",
+    from: process.env.MONTHLY_REPORT_EMAIL_FROM || "",
+    to: parseRecipients(process.env.MONTHLY_REPORT_EMAIL_TO || ""),
+  };
+}
+
+function validateEmailConfig(config) {
+  if (!config.enabled) {
+    throw new Error("Monthly report email is disabled. Set MONTHLY_REPORT_EMAIL_ENABLED=true to enable it.");
+  }
+  if (!config.apiKey) {
+    throw new Error("Missing RESEND_API_KEY.");
+  }
+  if (!config.from) {
+    throw new Error("Missing MONTHLY_REPORT_EMAIL_FROM.");
+  }
+  if (config.to.length === 0) {
+    throw new Error("Missing MONTHLY_REPORT_EMAIL_TO recipients.");
+  }
+}
+
+async function sendMonthlyReportEmail({ month, reportUrl, reportData }) {
+  const config = getEmailConfig();
+  validateEmailConfig(config);
+
+  const resend = new Resend(config.apiKey);
+  const subject = `Raport lunar BVB luna ${month}`;
+  const html = renderEmailReport(reportData, reportUrl);
+
+>>>>>>> local
   const response = await resend.emails.send({
     from: config.from,
     to: config.to,
@@ -961,7 +1186,56 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  BASE_URL,
+  DATA_DIR,
+  DOCS_DIR,
+  REPORTS_DIR,
+  CONFIG_PATH,
+  ETF_SYMBOL,
+  ETF_SOURCE_URL,
+  ETF_MONTH_OVERRIDES,
+  nowStamp,
+  readSymbols,
+  readTrackedSymbols,
+  ensureDir,
+  reportTitleFromFilename,
+  buildPublicIndex,
+  parseNumber,
+  escapeHtml,
+  splitCsvLine,
+  parseCsv,
+  fetchText,
+  fetchBvbCsv,
+  defaultSnapshotDay,
+  normalizeSnapshot,
+  saveSnapshot,
+  loadSnapshots,
+  calculatePerformance,
+  formatNumber,
+  formatPercent,
+  formatDelta,
+  percentClass,
+  parseReportMonthFromFilename,
+  parseEtfSnapshotFromReport,
+  loadPreviousEtfSnapshot,
+  extractEtfFromSnapshot,
+  resolveEtfSnapshot,
+  buildEtfSection,
+  renderRows,
+  renderTable,
+  sortingScript,
+  buildReport,
+  commandPublish,
+  commandSnapshot,
+  commandReport,
+  getArg,
+  main,
+};
