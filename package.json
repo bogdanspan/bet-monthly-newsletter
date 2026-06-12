@@ -1,0 +1,9 @@
+{
+  "name": "bet-weekly-movement",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/run-unit-tests.js",
+    "test:report": "node scripts/run-report-regression.js",
+    "test:regression": "npm run test && npm run test:report"
+  }
+}

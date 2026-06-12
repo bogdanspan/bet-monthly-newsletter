@@ -5,10 +5,10 @@ const path = require("path");
 const https = require("https");
 
 const BASE_URL = "https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx";
-const DATA_DIR = path.join("data", "bvb_weekly_snapshots");
-const DOCS_DIR = "docs";
-const REPORTS_DIR = path.join(DOCS_DIR, "reports");
-const CONFIG_PATH = path.join("config", "bet_symbols.json");
+const DATA_DIR = process.env.BET_DATA_DIR || path.join("data", "bvb_weekly_snapshots");
+const DOCS_DIR = process.env.BET_DOCS_DIR || "docs";
+const REPORTS_DIR = process.env.BET_REPORTS_DIR || path.join(DOCS_DIR, "reports");
+const CONFIG_PATH = process.env.BET_CONFIG_PATH || path.join("config", "bet_symbols.json");
 const ETF_SYMBOL = "TVBETETF";
 const ETF_SOURCE_URL = `https://m.bvb.ro/FinancialInstruments/Details/FinancialInstrumentsDetails.aspx?s=${ETF_SYMBOL}`;
 const ETF_MONTH_OVERRIDES = {
@@ -21,6 +21,10 @@ const ETF_MONTH_OVERRIDES = {
 };
 
 function nowStamp() {
+  if (process.env.BET_NOW_STAMP) {
+    return process.env.BET_NOW_STAMP;
+  }
+
   const now = new Date();
   const pad = (value) => String(value).padStart(2, "0");
   return [
@@ -704,7 +708,56 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  BASE_URL,
+  DATA_DIR,
+  DOCS_DIR,
+  REPORTS_DIR,
+  CONFIG_PATH,
+  ETF_SYMBOL,
+  ETF_SOURCE_URL,
+  ETF_MONTH_OVERRIDES,
+  nowStamp,
+  readSymbols,
+  readTrackedSymbols,
+  ensureDir,
+  reportTitleFromFilename,
+  buildPublicIndex,
+  parseNumber,
+  escapeHtml,
+  splitCsvLine,
+  parseCsv,
+  fetchText,
+  fetchBvbCsv,
+  defaultSnapshotDay,
+  normalizeSnapshot,
+  saveSnapshot,
+  loadSnapshots,
+  calculatePerformance,
+  formatNumber,
+  formatPercent,
+  formatDelta,
+  percentClass,
+  parseReportMonthFromFilename,
+  parseEtfSnapshotFromReport,
+  loadPreviousEtfSnapshot,
+  extractEtfFromSnapshot,
+  resolveEtfSnapshot,
+  buildEtfSection,
+  renderRows,
+  renderTable,
+  sortingScript,
+  buildReport,
+  commandPublish,
+  commandSnapshot,
+  commandReport,
+  getArg,
+  main,
+};
