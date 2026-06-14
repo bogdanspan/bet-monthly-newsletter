@@ -24,6 +24,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Resolve report month
         id: month
@@ -51,3 +55,20 @@ jobs:
             git commit -m "Generate BET monthly performance report"
             git push
           fi
+
+<<<<<<< codex/send-report-by-mail
+=======
+      - name: Wait for Pages deployment
+        if: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
+        run: sleep 600
+
+>>>>>>> local
+      - name: Send monthly report email
+        if: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
+        env:
+          MONTHLY_REPORT_EMAIL_ENABLED: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED }}
+          MONTHLY_REPORT_EMAIL_FROM: ${{ vars.MONTHLY_REPORT_EMAIL_FROM }}
+          MONTHLY_REPORT_EMAIL_TO: ${{ vars.MONTHLY_REPORT_EMAIL_TO }}
+          MONTHLY_REPORT_SITE_URL: ${{ vars.MONTHLY_REPORT_SITE_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: node scripts/bet-report.js send-email --month "${{ steps.month.outputs.value }}"
