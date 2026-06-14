@@ -1,14 +1,14 @@
 {
-  "name": "bet-monthly-newsletter",
+  "name": "bet-weekly-movement",
   "private": true,
-  "version": "1.0.0",
-  "description": "BET monthly movement automation",
   "scripts": {
+    "test": "node scripts/run-unit-tests.js",
+    "test:report": "node scripts/run-report-regression.js",
+    "test:regression": "npm run test && npm run test:report",
     "snapshot": "node scripts/bet-report.js snapshot",
     "report": "node scripts/bet-report.js report",
     "send-email": "node scripts/bet-report.js send-email",
     "publish": "node scripts/bet-report.js publish"
-  },
   "dependencies": {
     "resend": "^4.6.0"
   }

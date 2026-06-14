@@ -965,7 +965,56 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  BASE_URL,
+  DATA_DIR,
+  DOCS_DIR,
+  REPORTS_DIR,
+  CONFIG_PATH,
+  ETF_SYMBOL,
+  ETF_SOURCE_URL,
+  ETF_MONTH_OVERRIDES,
+  nowStamp,
+  readSymbols,
+  readTrackedSymbols,
+  ensureDir,
+  reportTitleFromFilename,
+  buildPublicIndex,
+  parseNumber,
+  escapeHtml,
+  splitCsvLine,
+  parseCsv,
+  fetchText,
+  fetchBvbCsv,
+  defaultSnapshotDay,
+  normalizeSnapshot,
+  saveSnapshot,
+  loadSnapshots,
+  calculatePerformance,
+  formatNumber,
+  formatPercent,
+  formatDelta,
+  percentClass,
+  parseReportMonthFromFilename,
+  parseEtfSnapshotFromReport,
+  loadPreviousEtfSnapshot,
+  extractEtfFromSnapshot,
+  resolveEtfSnapshot,
+  buildEtfSection,
+  renderRows,
+  renderTable,
+  sortingScript,
+  buildReport,
+  commandPublish,
+  commandSnapshot,
+  commandReport,
+  getArg,
+  main,
+};
