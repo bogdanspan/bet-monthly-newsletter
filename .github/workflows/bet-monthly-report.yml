@@ -72,14 +72,9 @@ jobs:
             git commit -m "Generate BET monthly performance report"
             git push
           fi
-
-<<<<<<< codex/send-report-by-mail
-=======
       - name: Wait for Pages deployment
         if: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
         run: sleep 600
-
->>>>>>> local
       - name: Send monthly report email
         if: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
         env:
