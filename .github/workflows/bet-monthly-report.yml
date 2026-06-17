@@ -76,6 +76,22 @@ jobs:
             echo "email_only=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Check email configuration
+        id: email
+        shell: bash
+        env:
+          MONTHLY_REPORT_EMAIL_ENABLED: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED }}
+          MONTHLY_REPORT_EMAIL_FROM: ${{ vars.MONTHLY_REPORT_EMAIL_FROM }}
+          MONTHLY_REPORT_EMAIL_TO: ${{ vars.MONTHLY_REPORT_EMAIL_TO }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          if [ "$MONTHLY_REPORT_EMAIL_ENABLED" = "true" ] && [ -n "$MONTHLY_REPORT_EMAIL_FROM" ] && [ -n "$MONTHLY_REPORT_EMAIL_TO" ] && [ -n "$RESEND_API_KEY" ]; then
+            echo "can_send=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "can_send=false" >> "$GITHUB_OUTPUT"
+            echo "Monthly email is disabled or incomplete; send step will be skipped."
+          fi
+
       - name: Generate monthly report
         if: ${{ steps.mode.outputs.email_only != 'true' }}
         run: node scripts/bet-report.js report --month "${{ steps.month.outputs.value }}"
@@ -93,10 +109,10 @@ jobs:
             git push
           fi
       - name: Wait for Pages deployment
-        if: ${{ steps.mode.outputs.email_only != 'true' && vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
+        if: ${{ steps.mode.outputs.email_only != 'true' && steps.email.outputs.can_send == 'true' }}
         run: sleep 600
       - name: Send monthly report email
-        if: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
+        if: ${{ steps.email.outputs.can_send == 'true' }}
         env:
           MONTHLY_REPORT_EMAIL_ENABLED: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED }}
           MONTHLY_REPORT_EMAIL_FROM: ${{ vars.MONTHLY_REPORT_EMAIL_FROM }}
