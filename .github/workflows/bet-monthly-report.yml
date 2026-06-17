@@ -10,6 +10,11 @@ on:
         description: "Optional report month in YYYY-MM format"
         required: false
         type: string
+      send_email_only:
+        description: "Skip report generation and only send the email for an existing report"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -58,10 +63,25 @@ jobs:
             node -e 'const d = new Date(); const y = d.getUTCMonth() === 0 ? d.getUTCFullYear() - 1 : d.getUTCFullYear(); const m = d.getUTCMonth() === 0 ? 12 : d.getUTCMonth(); console.log("value=" + y + "-" + String(m).padStart(2, "0"));' >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Check email-only mode
+        id: mode
+        shell: bash
+        env:
+          SEND_EMAIL_ONLY: ${{ inputs.send_email_only }}
+        run: |
+          if [ "$SEND_EMAIL_ONLY" = "true" ]; then
+            echo "email_only=true" >> "$GITHUB_OUTPUT"
+            echo "Manual email-only run enabled for month ${{ steps.month.outputs.value }}."
+          else
+            echo "email_only=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Generate monthly report
+        if: ${{ steps.mode.outputs.email_only != 'true' }}
         run: node scripts/bet-report.js report --month "${{ steps.month.outputs.value }}"
 
       - name: Commit report
+        if: ${{ steps.mode.outputs.email_only != 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -73,7 +93,7 @@ jobs:
             git push
           fi
       - name: Wait for Pages deployment
-        if: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
+        if: ${{ steps.mode.outputs.email_only != 'true' && vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
         run: sleep 600
       - name: Send monthly report email
         if: ${{ vars.MONTHLY_REPORT_EMAIL_ENABLED == 'true' && secrets.RESEND_API_KEY != '' && vars.MONTHLY_REPORT_EMAIL_FROM != '' && vars.MONTHLY_REPORT_EMAIL_TO != '' }}
