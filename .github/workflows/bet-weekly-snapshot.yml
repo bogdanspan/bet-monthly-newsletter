@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Fetch BVB snapshot
         env:
           SNAPSHOT_DAY: ${{ inputs.day }}
