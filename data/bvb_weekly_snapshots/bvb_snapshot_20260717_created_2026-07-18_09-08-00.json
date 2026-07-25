@@ -369,5 +369,11 @@
       "volume": 72503,
       "value": 451443.78
     }
-  ]
+  ],
+  "etfSnapshot": {
+    "symbol": "TVBETETF",
+    "price": 59.2028,
+    "priceTimestamp": "2026-07-17",
+    "sourceUrl": "https://bvb.ro/infocont/infocont26/TVBETETF_20260720084934_VUAN-ETF-BET-Patria---Tradeville-17-07-2026.pdf"
+  }
 }
