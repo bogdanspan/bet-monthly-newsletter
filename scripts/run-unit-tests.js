@@ -44,11 +44,43 @@ function testCalculatePerformance() {
 
 function testBuildEtfSection() {
   // Verify the ETF section exposes the HTML copy and machine-readable data attributes.
-  const section = report.buildEtfSection("2026-05", []);
+  const section = report.buildEtfSectionData("2026-05", []);
 
   assert.match(section.html, /TVBETETF la BVB/);
   assert.match(section.dataHtml, /data-etf-symbol="TVBETETF"/);
   assert.match(section.dataHtml, /data-etf-price="50\.5200"/);
+}
+
+function testParseEtfDetailsPage() {
+  // Verify ETF details parsing extracts the last price and timestamp from the BVB details page.
+  const snapshot = report.parseEtfDetailsPage(`
+    <html>
+      <body>
+        <h2>FONDUL DESCHIS DE INVESTITII ETF BET PATRIA-TRADEVILLE</h2>
+        61,8200
+        24.07.2026 17:59:20
+      </body>
+    </html>
+  `);
+
+  assert.deepEqual(snapshot, {
+    symbol: "TVBETETF",
+    price: 61.82,
+    priceTimestamp: "24.07.2026 17:59:20",
+    sourceUrl: report.ETF_SOURCE_URL,
+  });
+}
+
+function testCalculateMonthlyAverageEtf() {
+  // Verify the monthly ETF average is computed from all snapshots that carry a usable ETF value.
+  const average = report.calculateMonthlyAverageEtf([
+    { etfSnapshot: { symbol: "TVBETETF", price: 50, priceTimestamp: "2026-05-01", sourceUrl: report.ETF_SOURCE_URL } },
+    { trackedInstruments: [{ symbol: "TVBETETF", close: 52 }], sourceDay: "20260508" },
+    { trackedInstruments: [{ symbol: "TLV", close: 30 }] },
+  ]);
+
+  assert.equal(Number(average.price.toFixed(2)), 51);
+  assert.equal(average.sampleCount, 2);
 }
 
 function main() {
@@ -56,6 +88,8 @@ function main() {
   testParseCsv();
   testCalculatePerformance();
   testBuildEtfSection();
+  testParseEtfDetailsPage();
+  testCalculateMonthlyAverageEtf();
   console.log("Unit checks passed");
 }
 
