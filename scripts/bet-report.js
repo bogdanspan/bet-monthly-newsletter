@@ -196,7 +196,9 @@ function fetchText(url, allowInsecureSsl = false) {
 
 function parseEtfDetailsPage(html) {
   const normalizedHtml = String(html || "").replace(/\s+/g, " ").trim();
-  const priceMatch = normalizedHtml.match(/ETF BET PATRIA-TRADEVILLE(?:<\/h\d>|)\s+([0-9.,]+)\s+(\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}:\d{2})/i);
+  const priceMatch = normalizedHtml.match(
+    /HeaderControl_prices[\s\S]*?<b[^>]*class=["'][^"']*\bvalue\b[^"']*["'][^>]*>\s*([0-9.,]+)\s*<\/b>[\s\S]*?<span[^>]*class=["'][^"']*\bdate\b[^"']*["'][^>]*>\s*(\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}:\d{2})\s*<\/span>/i,
+  );
   if (!priceMatch) return null;
 
   return {
@@ -208,12 +210,45 @@ function parseEtfDetailsPage(html) {
 }
 
 async function fetchEtfSnapshot() {
-  const html = await fetchText(ETF_SOURCE_URL);
+  let insecureSslFallback = false;
+  let html;
+
+  try {
+    html = await fetchText(ETF_SOURCE_URL);
+  } catch (error) {
+    if (!isCertificateProblem(error)) throw error;
+
+    insecureSslFallback = true;
+    html = await fetchText(ETF_SOURCE_URL, true);
+  }
+
   const snapshot = parseEtfDetailsPage(html);
   if (!snapshot || !Number.isFinite(snapshot.price)) {
     throw new Error(`Could not parse ETF details from ${ETF_SOURCE_URL}`);
   }
-  return snapshot;
+  return { ...snapshot, insecureSslFallback };
+}
+
+function isCertificateProblem(error) {
+  return [
+    "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "CERT_HAS_EXPIRED",
+    "SELF_SIGNED_CERT_IN_CHAIN",
+    "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
+  ].includes(error?.code);
+}
+
+function requireEtfSnapshot(etfSnapshot) {
+  if (
+    !etfSnapshot
+    || etfSnapshot.symbol !== ETF_SYMBOL
+    || !Number.isFinite(etfSnapshot.price)
+    || etfSnapshot.price <= 0
+  ) {
+    throw new Error(`Weekly snapshot aborted: missing valid ${ETF_SYMBOL} value from BVB.`);
+  }
+
+  return etfSnapshot;
 }
 
 async function fetchBvbCsv(day) {
@@ -224,13 +259,7 @@ async function fetchBvbCsv(day) {
   try {
     text = await fetchText(url);
   } catch (error) {
-    const certificateProblem =
-      error.code === "UNABLE_TO_VERIFY_LEAF_SIGNATURE" ||
-      error.code === "CERT_HAS_EXPIRED" ||
-      error.code === "SELF_SIGNED_CERT_IN_CHAIN" ||
-      error.code === "UNABLE_TO_GET_ISSUER_CERT_LOCALLY";
-
-    if (!certificateProblem) throw error;
+    if (!isCertificateProblem(error)) throw error;
 
     insecureSslFallback = true;
     text = await fetchText(url, true);
@@ -966,22 +995,28 @@ function commandPublish() {
   console.log(`Published reports to ${DOCS_DIR}`);
 }
 
-async function commandSnapshot(day) {
+async function buildWeeklySnapshot(day, dependencies = {}) {
   const snapshotDay = day || defaultSnapshotDay();
+  const fetchBvb = dependencies.fetchBvbCsv || fetchBvbCsv;
+  const fetchEtf = dependencies.fetchEtfSnapshot || fetchEtfSnapshot;
   const [result, etfSnapshot] = await Promise.all([
-    fetchBvbCsv(snapshotDay),
-    fetchEtfSnapshot().catch((error) => {
-      console.warn(`Warning: could not fetch ETF snapshot: ${error.message}`);
-      return null;
-    }),
+    fetchBvb(snapshotDay),
+    fetchEtf(),
   ]);
   const snapshot = normalizeSnapshot(
     snapshotDay,
     result.url,
     result.rows,
     result.insecureSslFallback,
-    etfSnapshot,
+    requireEtfSnapshot(etfSnapshot),
   );
+
+  requireEtfSnapshot(snapshot.etfSnapshot);
+  return snapshot;
+}
+
+async function commandSnapshot(day) {
+  const snapshot = await buildWeeklySnapshot(day);
   const snapshotPath = saveSnapshot(snapshot);
 
   console.log(`Saved snapshot: ${snapshotPath}`);
@@ -992,7 +1027,7 @@ async function commandSnapshot(day) {
   if (snapshot.betRowCount === 0) {
     console.warn("Warning: snapshot has no BET rows.");
   }
-  if (snapshot.insecureSslFallback) {
+  if (snapshot.insecureSslFallback || snapshot.etfSnapshot.insecureSslFallback) {
     console.warn("Warning: used SSL verification fallback for BVB request.");
   }
 }
@@ -1080,6 +1115,8 @@ module.exports = {
   fetchText,
   parseEtfDetailsPage,
   fetchEtfSnapshot,
+  isCertificateProblem,
+  requireEtfSnapshot,
   fetchBvbCsv,
   defaultSnapshotDay,
   normalizeSnapshot,
@@ -1103,6 +1140,7 @@ module.exports = {
   renderWebReport,
   buildReportData,
   commandPublish,
+  buildWeeklySnapshot,
   commandSnapshot,
   commandReport,
   getArg,
