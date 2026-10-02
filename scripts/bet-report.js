@@ -229,6 +229,12 @@ async function fetchEtfSnapshot() {
   return { ...snapshot, insecureSslFallback };
 }
 
+function formatReportDate(value) {
+  const match = String(value ?? "").match(/^(\d{4})(\d{2})(\d{2})$/);
+  if (!match) return String(value ?? "");
+  return `${match[3]}/${match[2]}/${match[1]}`;
+}
+
 function isCertificateProblem(error) {
   return [
     "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
@@ -579,9 +585,9 @@ function renderTable(rows, options = {}) {
   const headers = [
     { label: "Simbol", type: "text", className: "" },
     { label: "Companie", type: "text", className: "" },
-    { label: "Start", type: "number", className: "num" },
-    { label: "Final", type: "number", className: "num" },
-    { label: "Performanta", type: "number", className: "num" },
+    { label: "Start (Ron)", type: "number", className: "num" },
+    { label: "Final (Ron)", type: "number", className: "num" },
+    { label: "Performanta (%)", type: "number", className: "num" },
   ];
   const tableAttributes = [
     tableId ? `id="${escapeHtml(tableId)}"` : "",
@@ -693,7 +699,9 @@ function buildReportData(month) {
     snapshots,
     startSnapshot,
     endSnapshot,
-    intervalUsed: hasSnapshots ? `${startSnapshot.sourceDay} - ${endSnapshot.sourceDay}` : "N/A",
+    intervalUsed: hasSnapshots
+      ? `${formatReportDate(startSnapshot.sourceDay)} - ${formatReportDate(endSnapshot.sourceDay)}`
+      : "N/A",
     noDataMessage: hasSnapshots ? "" : `Nu exista snapshoturi valide pentru luna ${month}.`,
     rows,
     topRows: rows.slice(0, 5),
@@ -707,7 +715,7 @@ function renderWebReport(reportData) {
     .map(
       (snapshot) => `
       <li>
-        ${escapeHtml(snapshot.sourceDay)}: ${escapeHtml(snapshot.betRowCount)} companii BET,
+        ${escapeHtml(formatReportDate(snapshot.sourceDay))}: ${escapeHtml(snapshot.betRowCount)} companii BET,
         sursa: <a href="${escapeHtml(snapshot.sourceUrl)}">${escapeHtml(snapshot.sourceUrl)}</a>
       </li>`,
     )
@@ -798,9 +806,9 @@ function renderEmailTable(rows) {
       <tr>
         <th align="left" style="background:#102a43;color:#ffffff;padding:10px 12px;">Simbol</th>
         <th align="left" style="background:#102a43;color:#ffffff;padding:10px 12px;">Companie</th>
-        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Start</th>
-        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Final</th>
-        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Performanta</th>
+        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Start (Ron)</th>
+        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Final (Ron)</th>
+        <th align="right" style="background:#102a43;color:#ffffff;padding:10px 12px;">Performanta (%)</th>
       </tr>
     </thead>
     <tbody>
@@ -827,7 +835,7 @@ function renderEmailReport(reportData, reportUrl) {
         .map(
           (snapshot) => `
           <li style="margin:0 0 8px;">
-            ${escapeHtml(snapshot.sourceDay)}: ${escapeHtml(snapshot.betRowCount)} companii BET, sursa:
+            ${escapeHtml(formatReportDate(snapshot.sourceDay))}: ${escapeHtml(snapshot.betRowCount)} companii BET, sursa:
             <a href="${escapeHtml(snapshot.sourceUrl)}" style="color:#0b7285;">${escapeHtml(snapshot.sourceUrl)}</a>
           </li>`,
         )

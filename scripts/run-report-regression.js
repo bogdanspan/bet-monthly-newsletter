@@ -87,7 +87,11 @@ function run() {
   const losersTable = extractTableRows(html, "top-losers");
 
   // Check the main user-visible facts and rankings rendered into the report.
-  assert.match(html, /Interval folosit:<\/strong> 20260522 - 20260529\./);
+  assert.match(html, /Interval folosit:<\/strong> 22\/05\/2026 - 29\/05\/2026\./);
+  assert.match(html, /22\/05\/2026: 20 companii BET,/);
+  assert.match(html, />Start \(Ron\)<span class="sort-indicator"/);
+  assert.match(html, />Final \(Ron\)<span class="sort-indicator"/);
+  assert.match(html, />Performanta \(%\)<span class="sort-indicator"/);
   assert.match(html, /TVBETETF la BVB:<\/strong> 50,5200 lei\./);
   assert.match(html, /data-etf-symbol="TVBETETF"/);
   assert.equal(fullTable.length, expectedRows.length, "Full table row count mismatch");
