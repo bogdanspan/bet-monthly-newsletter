@@ -94,6 +94,7 @@ function testRenderedReportIncludesBvbEtfInformation() {
   assert.match(html, /TVBETETF la BVB:<\/strong> 58,0000 lei\./);
   assert.match(html, /Data valorii ETF:<\/strong> 14\.08\.2026 17:59:00\./);
   assert.match(html, new RegExp(report.ETF_SOURCE_URL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(html, new RegExp(`<a href="${report.ETF_SOURCE_URL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}" target="_blank" rel="noopener noreferrer">`));
   assert.match(html, /Media ETF in snapshot-urile lunii:<\/strong> 57,0000 lei \(2 observatii\)\./);
 }
 

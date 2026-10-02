@@ -94,6 +94,7 @@ function run() {
   assert.match(html, />Performanta \(%\)<span class="sort-indicator"/);
   assert.match(html, /TVBETETF la BVB:<\/strong> 50,5200 lei\./);
   assert.match(html, /data-etf-symbol="TVBETETF"/);
+  assert.doesNotMatch(html, /<a\b(?![^>]*\btarget="_blank")/i);
   assert.equal(fullTable.length, expectedRows.length, "Full table row count mismatch");
   assert.equal(topTable[0][0], expectedRows[0].symbol, "Top gainer symbol mismatch");
   assert.equal(losersTable[0][0], expectedRows[expectedRows.length - 1].symbol, "Top loser symbol mismatch");

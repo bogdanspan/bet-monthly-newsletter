@@ -70,7 +70,7 @@ function buildPublicIndex() {
     ? reportFiles
         .map((file) => {
           const title = reportTitleFromFilename(file);
-          return `<li><a href="reports/${escapeHtml(file)}">${escapeHtml(title)}</a><span>${escapeHtml(file)}</span></li>`;
+          return `<li><a href="reports/${escapeHtml(file)}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)}</a><span>${escapeHtml(file)}</span></li>`;
         })
         .join("\n")
     : `<li><span>Nu exista inca rapoarte publicate.</span></li>`;
@@ -558,7 +558,7 @@ function buildEtfSectionData(month, snapshots) {
     html: `
     <p><strong>TVBETETF la BVB:</strong> ${escapeHtml(formatNumber(current.price))} lei.</p>
     <p><strong>Data valorii ETF:</strong> ${escapeHtml(current.priceTimestamp)}.</p>
-    <p><strong>Sursa ETF:</strong> <a href="${escapeHtml(current.sourceUrl)}">${escapeHtml(current.sourceUrl)}</a>.</p>
+    <p><strong>Sursa ETF:</strong> <a href="${escapeHtml(current.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(current.sourceUrl)}</a>.</p>
     ${average ? `<p><strong>Media ETF in snapshot-urile lunii:</strong> ${escapeHtml(formatNumber(average.price))} lei (${escapeHtml(String(average.sampleCount))} observatii).</p>` : ""}
     ${comparisonHtml}`,
     dataHtml: `<div class="etf-report-data" data-etf-symbol="${escapeHtml(current.symbol)}" data-etf-price="${escapeHtml(current.price.toFixed(4))}" data-etf-price-timestamp="${escapeHtml(current.priceTimestamp)}" data-etf-source-url="${escapeHtml(current.sourceUrl)}"></div>`,
@@ -716,7 +716,7 @@ function renderWebReport(reportData) {
       (snapshot) => `
       <li>
         ${escapeHtml(formatReportDate(snapshot.sourceDay))}: ${escapeHtml(snapshot.betRowCount)} companii BET,
-        sursa: <a href="${escapeHtml(snapshot.sourceUrl)}">${escapeHtml(snapshot.sourceUrl)}</a>
+        sursa: <a href="${escapeHtml(snapshot.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(snapshot.sourceUrl)}</a>
       </li>`,
     )
     .join("");
