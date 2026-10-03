@@ -1,0 +1,391 @@
+{
+  "source": "BVB HistoricalTradingInfo CSV",
+  "sourceUrl": "https://bvb.ro/TradingAndStatistics/Trading/HistoricalTradingInfo.ashx?day=20261002&type=s&filetype=csv&lang=en",
+  "sourceDay": "20261002",
+  "createdAt": "2026-10-03T12:39:38.487Z",
+  "insecureSslFallback": false,
+  "rowCount": 146,
+  "betRowCount": 20,
+  "instruments": [
+    {
+      "symbol": "ATB",
+      "name": "ANTIBIOTICE S.A.",
+      "market": "REGS",
+      "close": 1.984,
+      "refPrice": 1.91,
+      "volume": 90152,
+      "value": 175770.79
+    },
+    {
+      "symbol": "AQ",
+      "name": "AQUILA PART PROD COM",
+      "market": "REGS",
+      "close": 1.65,
+      "refPrice": 1.52,
+      "volume": 809992,
+      "value": 1278933.16
+    },
+    {
+      "symbol": "TLV",
+      "name": "BANCA TRANSILVANIA S.A.",
+      "market": "REGS",
+      "close": 34.7,
+      "refPrice": 34.78,
+      "volume": 388697,
+      "value": 13550359.06
+    },
+    {
+      "symbol": "BRD",
+      "name": "BRD - GROUPE SOCIETE GENERALE S.A.",
+      "market": "REGS",
+      "close": 29.65,
+      "refPrice": 28.6,
+      "volume": 66859,
+      "value": 1960035.45
+    },
+    {
+      "symbol": "TEL",
+      "name": "C.N.T.E.E. TRANSELECTRICA",
+      "market": "REGS",
+      "close": 95.1,
+      "refPrice": 91.4,
+      "volume": 11278,
+      "value": 1081093.2
+    },
+    {
+      "symbol": "CFH",
+      "name": "CRIS-TIM FAMILY HOLDING",
+      "market": "REGS",
+      "close": 46.8,
+      "refPrice": 42.7,
+      "volume": 57102,
+      "value": 2610117.65
+    },
+    {
+      "symbol": "DIGI",
+      "name": "Digi Communications N.V.",
+      "market": "REGS",
+      "close": 55.7,
+      "refPrice": 54,
+      "volume": 41810,
+      "value": 2336361.5
+    },
+    {
+      "symbol": "FP",
+      "name": "FONDUL PROPRIETATEA",
+      "market": "REGS",
+      "close": 0.61,
+      "refPrice": 0.608,
+      "volume": 1024159,
+      "value": 624017.913
+    },
+    {
+      "symbol": "M",
+      "name": "MedLife S.A.",
+      "market": "REGS",
+      "close": 9.95,
+      "refPrice": 9.94,
+      "volume": 48476,
+      "value": 481884.44
+    },
+    {
+      "symbol": "SNP",
+      "name": "OMV PETROM S.A.",
+      "market": "REGS",
+      "close": 1.187,
+      "refPrice": 1.18,
+      "volume": 6160659,
+      "value": 7358105.686
+    },
+    {
+      "symbol": "ONE",
+      "name": "ONE UNITED PROPERTIES",
+      "market": "REGS",
+      "close": 29.9,
+      "refPrice": 29.7,
+      "volume": 5811,
+      "value": 173686.7
+    },
+    {
+      "symbol": "PE",
+      "name": "Premier Energy PLC",
+      "market": "REGS",
+      "close": 54.8,
+      "refPrice": 52.2,
+      "volume": 20822,
+      "value": 1127905
+    },
+    {
+      "symbol": "SNN",
+      "name": "S.N. NUCLEARELECTRICA S.A.",
+      "market": "REGS",
+      "close": 56.5,
+      "refPrice": 52.2,
+      "volume": 83588,
+      "value": 4714656.1
+    },
+    {
+      "symbol": "SNG",
+      "name": "S.N.G.N. ROMGAZ S.A.",
+      "market": "REGS",
+      "close": 16.56,
+      "refPrice": 16.2,
+      "volume": 832174,
+      "value": 13947006.52
+    },
+    {
+      "symbol": "TGN",
+      "name": "S.N.T.G.N. TRANSGAZ S.A.",
+      "market": "REGS",
+      "close": 77.6,
+      "refPrice": 73.8,
+      "volume": 40316,
+      "value": 3129571.8
+    },
+    {
+      "symbol": "H2O",
+      "name": "S.P.E.E.H. HIDROELECTRICA S.A.",
+      "market": "REGS",
+      "close": 174.6,
+      "refPrice": 172,
+      "volume": 21985,
+      "value": 3833351.2
+    },
+    {
+      "symbol": "EL",
+      "name": "SOCIETATEA ENERGETICA ELECTRICA S.A.",
+      "market": "REGS",
+      "close": 52,
+      "refPrice": 51.7,
+      "volume": 58621,
+      "value": 3047401.3
+    },
+    {
+      "symbol": "SFG",
+      "name": "Sphera Franchise Group",
+      "market": "REGS",
+      "close": 31.6,
+      "refPrice": 31,
+      "volume": 15426,
+      "value": 476886.5
+    },
+    {
+      "symbol": "TRP",
+      "name": "TERAPLAST SA",
+      "market": "REGS",
+      "close": 0.374,
+      "refPrice": 0.374,
+      "volume": 964019,
+      "value": 362458.834
+    },
+    {
+      "symbol": "TTS",
+      "name": "TTS (TRANSPORT TRADE SERVICES)",
+      "market": "REGS",
+      "close": 6.78,
+      "refPrice": 6.66,
+      "volume": 6210,
+      "value": 42077.04
+    }
+  ],
+  "trackedInstruments": [
+    {
+      "symbol": "ATB",
+      "name": "ANTIBIOTICE S.A.",
+      "market": "REGS",
+      "close": 1.984,
+      "refPrice": 1.91,
+      "volume": 90152,
+      "value": 175770.79
+    },
+    {
+      "symbol": "AQ",
+      "name": "AQUILA PART PROD COM",
+      "market": "REGS",
+      "close": 1.65,
+      "refPrice": 1.52,
+      "volume": 809992,
+      "value": 1278933.16
+    },
+    {
+      "symbol": "TLV",
+      "name": "BANCA TRANSILVANIA S.A.",
+      "market": "REGS",
+      "close": 34.7,
+      "refPrice": 34.78,
+      "volume": 388697,
+      "value": 13550359.06
+    },
+    {
+      "symbol": "BRD",
+      "name": "BRD - GROUPE SOCIETE GENERALE S.A.",
+      "market": "REGS",
+      "close": 29.65,
+      "refPrice": 28.6,
+      "volume": 66859,
+      "value": 1960035.45
+    },
+    {
+      "symbol": "TEL",
+      "name": "C.N.T.E.E. TRANSELECTRICA",
+      "market": "REGS",
+      "close": 95.1,
+      "refPrice": 91.4,
+      "volume": 11278,
+      "value": 1081093.2
+    },
+    {
+      "symbol": "CFH",
+      "name": "CRIS-TIM FAMILY HOLDING",
+      "market": "REGS",
+      "close": 46.8,
+      "refPrice": 42.7,
+      "volume": 57102,
+      "value": 2610117.65
+    },
+    {
+      "symbol": "DIGI",
+      "name": "Digi Communications N.V.",
+      "market": "REGS",
+      "close": 55.7,
+      "refPrice": 54,
+      "volume": 41810,
+      "value": 2336361.5
+    },
+    {
+      "symbol": "FP",
+      "name": "FONDUL PROPRIETATEA",
+      "market": "REGS",
+      "close": 0.61,
+      "refPrice": 0.608,
+      "volume": 1024159,
+      "value": 624017.913
+    },
+    {
+      "symbol": "M",
+      "name": "MedLife S.A.",
+      "market": "REGS",
+      "close": 9.95,
+      "refPrice": 9.94,
+      "volume": 48476,
+      "value": 481884.44
+    },
+    {
+      "symbol": "SNP",
+      "name": "OMV PETROM S.A.",
+      "market": "REGS",
+      "close": 1.187,
+      "refPrice": 1.18,
+      "volume": 6160659,
+      "value": 7358105.686
+    },
+    {
+      "symbol": "ONE",
+      "name": "ONE UNITED PROPERTIES",
+      "market": "REGS",
+      "close": 29.9,
+      "refPrice": 29.7,
+      "volume": 5811,
+      "value": 173686.7
+    },
+    {
+      "symbol": "PE",
+      "name": "Premier Energy PLC",
+      "market": "REGS",
+      "close": 54.8,
+      "refPrice": 52.2,
+      "volume": 20822,
+      "value": 1127905
+    },
+    {
+      "symbol": "SNN",
+      "name": "S.N. NUCLEARELECTRICA S.A.",
+      "market": "REGS",
+      "close": 56.5,
+      "refPrice": 52.2,
+      "volume": 83588,
+      "value": 4714656.1
+    },
+    {
+      "symbol": "SNG",
+      "name": "S.N.G.N. ROMGAZ S.A.",
+      "market": "REGS",
+      "close": 16.56,
+      "refPrice": 16.2,
+      "volume": 832174,
+      "value": 13947006.52
+    },
+    {
+      "symbol": "TGN",
+      "name": "S.N.T.G.N. TRANSGAZ S.A.",
+      "market": "REGS",
+      "close": 77.6,
+      "refPrice": 73.8,
+      "volume": 40316,
+      "value": 3129571.8
+    },
+    {
+      "symbol": "H2O",
+      "name": "S.P.E.E.H. HIDROELECTRICA S.A.",
+      "market": "REGS",
+      "close": 174.6,
+      "refPrice": 172,
+      "volume": 21985,
+      "value": 3833351.2
+    },
+    {
+      "symbol": "EL",
+      "name": "SOCIETATEA ENERGETICA ELECTRICA S.A.",
+      "market": "REGS",
+      "close": 52,
+      "refPrice": 51.7,
+      "volume": 58621,
+      "value": 3047401.3
+    },
+    {
+      "symbol": "SFG",
+      "name": "Sphera Franchise Group",
+      "market": "REGS",
+      "close": 31.6,
+      "refPrice": 31,
+      "volume": 15426,
+      "value": 476886.5
+    },
+    {
+      "symbol": "TRP",
+      "name": "TERAPLAST SA",
+      "market": "REGS",
+      "close": 0.374,
+      "refPrice": 0.374,
+      "volume": 964019,
+      "value": 362458.834
+    },
+    {
+      "symbol": "TTS",
+      "name": "TTS (TRANSPORT TRADE SERVICES)",
+      "market": "REGS",
+      "close": 6.78,
+      "refPrice": 6.66,
+      "volume": 6210,
+      "value": 42077.04
+    },
+    {
+      "symbol": "TVBETETF",
+      "name": "ETF BET Patria-TradeVille",
+      "market": "ETF",
+      "close": 55.38,
+      "refPrice": null,
+      "volume": null,
+      "value": null,
+      "priceTimestamp": "02.10.2026 17:58:25",
+      "sourceUrl": "https://m.bvb.ro/FinancialInstruments/Details/FinancialInstrumentsDetails.aspx?s=TVBETETF"
+    }
+  ],
+  "etfSnapshot": {
+    "symbol": "TVBETETF",
+    "price": 55.38,
+    "priceTimestamp": "02.10.2026 17:58:25",
+    "sourceUrl": "https://m.bvb.ro/FinancialInstruments/Details/FinancialInstrumentsDetails.aspx?s=TVBETETF",
+    "insecureSslFallback": false
+  }
+}
